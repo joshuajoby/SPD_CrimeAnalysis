@@ -6,17 +6,7 @@ CrimeRegion is a web-based application that collects crime-related news from pub
 This project is developed for academic and educational purposes, demonstrating practical applications of web development, data processing, and rule-based text analysis.
 
 🧱 System Architecture
-Frontend (React + Vite + Tailwind)
-        |
-        |  HTTP (JSON)
-        v
-Backend (Flask API)
-        |
-        v
-SQLite Database
-        |
-        v
-Public News API (GNews)
+Frontend (React + Vite + Tailwind) -> HTTP (JSON) -> Backend (Flask API) -> SQLite Database -> Public News API (GNews)
 
 🛠️ Tools & Technologies Used
 
@@ -35,3 +25,4 @@ Styling: Tailwind CSS
 Charts: Recharts
 HTTP Client: Axios
 Version Control :Git & GitHub
+
