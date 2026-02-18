@@ -6,6 +6,8 @@ import ReportCrime from './pages/ReportCrime'
 import EmergencyContacts from './pages/EmergencyContacts'
 import MapPage from './pages/MapPage'
 
+import Admin from './pages/Admin'
+
 function App() {
   return (
     <Router>
@@ -15,6 +17,7 @@ function App() {
         <Route path="/report" element={<ReportCrime />} />
         <Route path="/emergency" element={<EmergencyContacts />} />
         <Route path="/map" element={<MapPage />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </Router>
   )

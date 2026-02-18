@@ -21,9 +21,20 @@ function ReportCrime() {
     const handleSubmit = (e) => {
         e.preventDefault()
         // Simulate API call
+        // Simulate API call & Save to LocalStorage
+        const newReport = {
+            id: Math.floor(Math.random() * 100000),
+            ...formData,
+            status: 'Pending',
+            submittedAt: new Date().toISOString()
+        }
+
+        const existingReports = JSON.parse(localStorage.getItem('reported_crimes') || '[]')
+        localStorage.setItem('reported_crimes', JSON.stringify([newReport, ...existingReports]))
+
         setTimeout(() => {
             setSubmitted(true)
-        }, 1000)
+        }, 800)
     }
 
     const handleChange = (e) => {

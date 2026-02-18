@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, ShieldAlert, BarChart3, Map, Phone } from 'lucide-react'
+import { Menu, X, ShieldAlert, BarChart3, Map, Phone, Lock } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '../lib/utils'
 import { Button } from './ui/button'
@@ -29,6 +29,7 @@ const Navbar = () => {
     { name: 'Report Crime', path: '/report', icon: ShieldAlert },
     { name: 'Map', path: '/map', icon: Map },
     { name: 'Emergency', path: '/emergency', icon: Phone },
+    { name: 'Admin', path: '/admin', icon: Lock },
   ]
 
   return (
@@ -61,7 +62,7 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     className={cn(
-                      "text-sm font-medium transition-colors gap-2",
+                      "text-base font-medium transition-colors gap-2",
                       isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
                     )}
                   >
