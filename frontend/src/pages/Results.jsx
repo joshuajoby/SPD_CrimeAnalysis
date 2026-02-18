@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { Loader2, Filter, Download, ArrowLeft } from 'lucide-react'
+import { Loader2, Filter, Download, ArrowLeft, RefreshCw, ShieldCheck, AlertOctagon } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { fetchNews, fetchStatistics, fetchLocations, fetchCredibilityDistribution } from '../utils/api'
@@ -110,15 +110,25 @@ function Results() {
         {/* Header */}
         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <Button variant="ghost" className="mb-2 pl-0 hover:pl-2 transition-all" onClick={() => navigate('/')}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Search
+            <Button variant="ghost" className="mb-2 pl-0 hover:pl-2 transition-all text-base" onClick={() => navigate('/')}>
+              <ArrowLeft className="mr-2 h-5 w-5" /> Back to Search
             </Button>
-            <h1 className="text-3xl font-bold tracking-tight">Crime Dashboard: {decodeURIComponent(region)}</h1>
-            <p className="text-muted-foreground">Real-time intelligence and community safety metrics.</p>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-4xl font-bold tracking-tight">Crime Dashboard: {decodeURIComponent(region)}</h1>
+              <span className="relative flex h-4 w-4">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500"></span>
+              </span>
+              <span className="text-red-500 font-bold text-sm tracking-widest uppercase animate-pulse">Live Feed</span>
+            </div>
+            <p className="text-xl text-muted-foreground">Real-time intelligence and community safety metrics.</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline">
-              <Download className="mr-2 h-4 w-4" /> Export Report
+          <div className="flex gap-3">
+            <Button variant="outline" size="lg" onClick={() => window.location.reload()}>
+              <RefreshCw className="mr-2 h-5 w-5" /> Refresh Intelligence
+            </Button>
+            <Button variant="default" size="lg">
+              <Download className="mr-2 h-5 w-5" /> Export Report
             </Button>
           </div>
         </div>
@@ -226,21 +236,21 @@ function Results() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <select
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="flex h-12 w-full rounded-md border border-input bg-background px-4 py-3 text-lg ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 value={statusFilter.crimeType}
                 onChange={(e) => handleFilterChange('crimeType', e.target.value)}
               >
                 {getCrimeTypeOptions().map(opt => <option key={opt} value={opt}>{opt}</option>)}
               </select>
               <select
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="flex h-12 w-full rounded-md border border-input bg-background px-4 py-3 text-lg ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 value={statusFilter.credibility}
                 onChange={(e) => handleFilterChange('credibility', e.target.value)}
               >
                 {getCredibilityOptions().map(opt => <option key={opt} value={opt}>{opt}</option>)}
               </select>
               <select
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="flex h-12 w-full rounded-md border border-input bg-background px-4 py-3 text-lg ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 value={statusFilter.location}
                 onChange={(e) => handleFilterChange('location', e.target.value)}
               >

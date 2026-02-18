@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, ShieldAlert, BarChart3, Map, Phone, Lock } from 'lucide-react'
+import { Menu, X, ShieldAlert, BarChart3, Map, Phone, Lock, BookOpen } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '../lib/utils'
 import { Button } from './ui/button'
@@ -28,6 +28,7 @@ const Navbar = () => {
     { name: 'Dashboard', path: '/results/All', icon: BarChart3 },
     { name: 'Report Crime', path: '/report', icon: ShieldAlert },
     { name: 'Map', path: '/map', icon: Map },
+    { name: 'Resources', path: '/resources', icon: BookOpen },
     { name: 'Emergency', path: '/emergency', icon: Phone },
     { name: 'Admin', path: '/admin', icon: Lock },
   ]
