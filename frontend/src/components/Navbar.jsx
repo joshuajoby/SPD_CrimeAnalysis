@@ -44,7 +44,6 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Dashboard', path: '/results/All', icon: BarChart3 },
     { name: 'Report Crime', path: '/report', icon: ShieldAlert },
-    { name: 'Map', path: '/map', icon: Map },
     { name: 'Resources', path: '/resources', icon: BookOpen },
     { name: 'Emergency', path: '/emergency', icon: Phone },
     { name: 'Admin', path: '/admin', icon: Lock },

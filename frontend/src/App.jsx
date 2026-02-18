@@ -17,7 +17,7 @@ function App() {
         <Route path="/results/:region" element={<Results />} />
         <Route path="/report" element={<ReportCrime />} />
         <Route path="/emergency" element={<EmergencyContacts />} />
-        <Route path="/map" element={<MapPage />} />
+
         <Route path="/resources" element={<Resources />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
