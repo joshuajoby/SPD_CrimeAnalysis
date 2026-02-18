@@ -4,7 +4,7 @@ import Home from './pages/Home'
 import Results from './pages/Results'
 import ReportCrime from './pages/ReportCrime'
 import EmergencyContacts from './pages/EmergencyContacts'
-import MapPage from './pages/MapPage'
+
 
 import Admin from './pages/Admin'
 import Resources from './pages/Resources'
