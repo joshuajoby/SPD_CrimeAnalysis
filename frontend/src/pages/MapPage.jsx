@@ -30,13 +30,13 @@ function MapPage() {
         <div className="min-h-screen flex flex-col bg-background">
             <Navbar />
 
-            <main className="flex-grow pt-28 w-full relative z-0" style={{ height: '85vh' }}>
+            <main className="flex-grow pt-28 w-full relative z-10 h-[calc(100vh)]">
                 <MapContainer
                     center={[20.5937, 78.9629]}
                     zoom={5}
                     scrollWheelZoom={true}
                     className="w-full h-full"
-                    style={{ height: "100%", width: "100%", zIndex: 0 }}
+                    style={{ height: "100%", width: "100%" }}
                 >
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
