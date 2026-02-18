@@ -98,7 +98,11 @@ function Home() {
                 <p className="text-2xl text-slate-600 leading-relaxed mb-8">
                   Raw data is useless. We turn chaos into clarity. Our advanced visualization engine processes millions of data points to give you actionable insights instantly.
                 </p>
-                <Button variant="outline" className="text-xl h-14 px-8 border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white transition-all">
+                <Button
+                  variant="outline"
+                  className="text-xl h-14 px-8 border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white transition-all"
+                  onClick={() => navigate('/results/All')}
+                >
                   Explore Analytics <ChevronRight className="ml-2" />
                 </Button>
               </div>
@@ -129,7 +133,11 @@ function Home() {
                 <p className="text-2xl text-slate-600 leading-relaxed mb-8">
                   Safety isn't a privilege, it's a right. Our predictive algorithms identify high-risk zones before incidents occur, keeping you and your loved ones one step ahead.
                 </p>
-                <Button variant="outline" className="text-xl h-14 px-8 border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white transition-all">
+                <Button
+                  variant="outline"
+                  className="text-xl h-14 px-8 border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white transition-all"
+                  onClick={() => navigate('/map')}
+                >
                   Check Safety Score <ChevronRight className="ml-2" />
                 </Button>
               </div>
@@ -146,6 +154,94 @@ function Home() {
           </div>
         </section>
 
+        {/* HOW IT WORKS (Realism/Education) */}
+        <section className="py-20 bg-slate-50 border-y border-slate-200">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-slate-900 mb-4">How CrimeWatch Works</h2>
+              <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+                We combine official data with community reports to create a verified safety network.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+              {/* Step 1 */}
+              <div className="text-center relative">
+                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 relative z-10">
+                  <Activity className="w-10 h-10 text-blue-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">1. Data Aggregation</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Our system continuously scans official police records, verified news outlets, and trusted NGO reports.
+                </p>
+                <div className="hidden md:block absolute top-10 left-[60%] w-full h-1 border-t-2 border-dashed border-slate-300 -z-0"></div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="text-center relative">
+                <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 relative z-10">
+                  <ShieldCheck className="w-10 h-10 text-purple-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">2. AI Verification</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Advanced algorithms cross-reference incidents to filter out misinformation and assign credibility scores.
+                </p>
+                <div className="hidden md:block absolute top-10 left-[60%] w-full h-1 border-t-2 border-dashed border-slate-300 -z-0"></div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="text-center">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 relative z-10">
+                  <Bell className="w-10 h-10 text-green-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">3. Real-Time Alerts</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Citizens receive instant notifications about high-risk events in their vicinity to take precautionary action.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* LATEST ALERTS GRID */}
+        <section className="py-24 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="flex justify-between items-end mb-12">
+              <div>
+                <h2 className="text-4xl font-bold text-slate-900 mb-2">Latest Community Alerts</h2>
+                <p className="text-xl text-slate-500">Real-time updates from your local network.</p>
+              </div>
+              <Button variant="link" className="text-blue-600 font-bold text-lg hidden md:flex">View All Alerts <ArrowRight className="ml-2 w-5 h-5" /></Button>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="border-slate-100 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 cursor-pointer group">
+                  <div className="h-48 bg-slate-200 relative overflow-hidden">
+                    <span className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 text-xs font-bold uppercase rounded-full animate-pulse">Critical</span>
+                    {/* Abstract Image Placeholder */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-slate-300 to-slate-400 group-hover:scale-110 transition-transform duration-700"></div>
+                  </div>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2 text-sm text-slate-500 mb-3">
+                      <MapPin className="w-4 h-4" /> <span>Sector {i + 4}, Cyber City</span>
+                      <span className="mx-2">•</span>
+                      <span>2 hrs ago</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">Suspicious Activity Reported Near Metro Station</h3>
+                    <p className="text-slate-600 mb-4 line-clamp-2">
+                      Local authorities have been notified of unusual large gathering. Citizens are advised to maintain distance and report any...
+                    </p>
+                    <div className="flex items-center text-blue-600 font-semibold cursor-pointer">
+                      Read Full Report <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* SAFETY SCORE "SHOCK" SECTION */}
         <section className="py-40 bg-slate-900 text-white relative overflow-hidden text-center">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
@@ -156,7 +252,11 @@ function Home() {
               Join the fastest growing safety network. <br />
               <span className="text-green-500">Your community needs you.</span>
             </p>
-            <Button size="lg" className="h-24 px-16 text-3xl font-bold bg-green-600 hover:bg-green-700 text-white rounded-2xl shadow-[0_0_50px_rgba(22,163,74,0.5)] transition-all hover:scale-105">
+            <Button
+              size="lg"
+              className="h-24 px-16 text-3xl font-bold bg-green-600 hover:bg-green-700 text-white rounded-2xl shadow-[0_0_50px_rgba(22,163,74,0.5)] transition-all hover:scale-105"
+              onClick={() => navigate('/report')}
+            >
               REPORT INCIDENT NOW
             </Button>
           </div>

@@ -30,7 +30,7 @@ function MapPage() {
         <div className="min-h-screen flex flex-col bg-background">
             <Navbar />
 
-            <main className="flex-grow pt-[112px] h-[calc(100vh-112px)] w-full relative z-0">
+            <main className="flex-grow pt-28 w-full relative z-0" style={{ height: '85vh' }}>
                 <MapContainer
                     center={[20.5937, 78.9629]}
                     zoom={5}
