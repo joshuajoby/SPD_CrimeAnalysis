@@ -78,8 +78,8 @@ const Navbar = () => {
             <div className="bg-primary/10 p-2 rounded-lg group-hover:bg-primary/20 transition-colors">
               <ShieldAlert className="h-6 w-6 text-primary" />
             </div>
-            <span className="font-bold text-xl tracking-tight text-foreground">
-              Crime<span className="text-primary">Watch</span>
+            <span className="font-bold text-xl tracking-tight text-slate-900">
+              Crime<span className="text-blue-600">Watch</span>
             </span>
           </Link>
 
@@ -95,7 +95,7 @@ const Navbar = () => {
                     variant="ghost"
                     className={cn(
                       "text-base font-medium transition-colors gap-2",
-                      isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
+                      isActive ? "bg-blue-100 text-blue-900" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                     )}
                   >
                     <Icon className="h-4 w-4" />
