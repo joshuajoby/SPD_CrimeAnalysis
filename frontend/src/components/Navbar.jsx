@@ -11,6 +11,23 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
 
+  // Mock Live Ticker Data
+  const tickerItems = [
+    "📢 ALERT: Severe thunderstorm warning in Mumbai District.",
+    "🚨 REPORT: Suspicious activity reported near Central Station.",
+    "🚓 UPDATE: Patrol units deployed to Sector 4.",
+    "✅ SUCCESS: Missing person located safe in Delhi.",
+    "🌧️ WEATHER: Heavy rains expected in coastal regions - Drive safely."
+  ]
+  const [tickerIndex, setTickerIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTickerIndex((prev) => (prev + 1) % tickerItems.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [])
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
@@ -40,6 +57,20 @@ const Navbar = () => {
         scrolled ? "bg-background/80 backdrop-blur-md border-border shadow-sm" : "bg-transparent"
       )}
     >
+      {/* Live Intelligence Ticker */}
+      <div className="bg-destructive text-destructive-foreground px-4 py-1 text-sm font-bold tracking-widest flex justify-center items-center overflow-hidden h-8">
+        <div className="animate-pulse mr-4 flex items-center"><ShieldAlert className="w-4 h-4 mr-1" /> LIVE INTELLIGENCE:</div>
+        <motion.span
+          key={tickerIndex}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="font-mono"
+        >
+          {tickerItems[tickerIndex]}
+        </motion.span>
+      </div>
+
       <div className="w-full px-4 sm:px-6">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}

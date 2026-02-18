@@ -81,7 +81,7 @@ function Home() {
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
       <Navbar />
 
-      <main className="flex-grow pt-16">
+      <main className="flex-grow pt-28">
         {/* Hero Section */}
         <section className="relative overflow-hidden py-20 lg:py-32">
           {/* Background Elements */}
@@ -96,12 +96,12 @@ function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary mb-6">
-                <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
+              <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-base font-medium text-primary mb-8">
+                <span className="flex h-3 w-3 rounded-full bg-primary mr-3 animate-pulse"></span>
                 Live Crime Intelligence Protocol
               </div>
 
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+              <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
                 Advanced Intelligence <br className="hidden md:block" />
                 for <span className="text-primary">Safer Communities</span>
               </h1>
@@ -114,7 +114,7 @@ function Home() {
               {/* Search Box */}
               <motion.form
                 onSubmit={handleSearch}
-                className="max-w-2xl mx-auto mb-16 relative group"
+                className="max-w-3xl mx-auto mb-20 relative group"
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
               >
@@ -125,38 +125,50 @@ function Home() {
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
                     placeholder="Enter region, state, or city (e.g., Delhi, Mumbai)"
-                    className="h-14 text-lg border-0 bg-transparent focus-visible:ring-0 shadow-none px-4"
+                    className="h-16 text-xl border-0 bg-transparent focus-visible:ring-0 shadow-none px-6"
                   />
                   <Button
                     type="submit"
                     size="lg"
-                    className="h-14 px-8 text-lg font-semibold shadow-lg"
+                    className="h-16 px-10 text-xl font-bold shadow-lg"
                   >
                     Analyze
                   </Button>
                 </div>
               </motion.form>
 
-              {/* Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-y border-border/50 py-8 bg-background/50 backdrop-blur-sm">
-                {[
-                  { label: 'Active Sources', value: '50+' },
-                  { label: 'Daily Reports', value: '100+' },
-                  { label: 'Cities Tracked', value: '25+' },
-                  { label: 'Data Accuracy', value: '98%' },
-                ].map((stat, idx) => (
-                  <div key={idx} className="text-center">
-                    <p className="text-3xl font-bold text-foreground mb-1">{stat.value}</p>
-                    <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{stat.label}</p>
+              {/* Unique Feature: Safety Score Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12 text-left">
+                <div className="p-8 rounded-2xl bg-card border border-border shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+                  <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                    <Shield className="h-8 w-8 text-green-600" />
                   </div>
-                ))}
+                  <h3 className="text-2xl font-bold mb-2">Predictive Safety Score</h3>
+                  <p className="text-lg text-muted-foreground">AI algorithm that calculates safety ratings for every neighborhood based on historical data.</p>
+                </div>
+                <div className="p-8 rounded-2xl bg-card border border-border shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+                  <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                    <BarChart className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">Trend Analysis</h3>
+                  <p className="text-lg text-muted-foreground">Identify rising crime patterns before they escalate with our advanced analytics engine.</p>
+                </div>
+                <div className="p-8 rounded-2xl bg-card border border-border shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+                  <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                    <Users className="h-8 w-8 text-purple-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">Crowd-Sourced Intel</h3>
+                  <p className="text-lg text-muted-foreground">Real-time reports from verified citizens creating a dense network of surveillance.</p>
+                </div>
               </div>
+
+
             </motion.div>
           </div>
-        </section>
+        </section >
 
         {/* Features Grid */}
-        <section className="py-20 bg-muted/30">
+        < section className="py-20 bg-muted/30" >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-5xl font-bold mb-4">Powerful Features</h2>
@@ -192,10 +204,10 @@ function Home() {
               })}
             </motion.div>
           </div>
-        </section>
+        </section >
 
         {/* CTA Section */}
-        <section className="py-24 relative overflow-hidden">
+        < section className="py-24 relative overflow-hidden" >
           <div className="absolute inset-0 bg-primary/5 z-0"></div>
           <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-4xl font-bold mb-6">Ready to secure your community?</h2>
@@ -211,11 +223,11 @@ function Home() {
               </Button>
             </div>
           </div>
-        </section>
-      </main>
+        </section >
+      </main >
 
       <Footer />
-    </div>
+    </div >
   )
 }
 
