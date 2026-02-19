@@ -191,33 +191,33 @@ function IndiaMap() {
             </MapContainer>
 
             {/* HUD Overlay Elements */}
-            <div className="absolute top-0 left-0 w-full p-6 flex justify-between pointer-events-none">
-                <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 px-4 py-2 rounded-lg pointer-events-auto">
+            <div className="absolute top-0 left-0 w-full p-4 md:p-6 flex justify-between pointer-events-none">
+                <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-2 rounded-lg pointer-events-auto">
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-                        <span className="text-xs font-bold tracking-widest text-white uppercase">Live Surveillance</span>
+                        <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-red-500 animate-pulse"></div>
+                        <span className="text-[10px] md:text-xs font-bold tracking-widest text-white uppercase">Live Surveillance</span>
                     </div>
                 </div>
 
-                <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 px-4 py-2 rounded-lg pointer-events-auto">
-                    <span className="text-xs font-bold text-amber-500">{totalIncidents} active signals</span>
+                <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-2 rounded-lg pointer-events-auto">
+                    <span className="text-[10px] md:text-xs font-bold text-amber-500">{totalIncidents} active signals</span>
                 </div>
             </div>
 
             {/* Bottom Legend */}
-            <div className="absolute bottom-6 left-6 pointer-events-none">
-                <div className="bg-slate-900/80 backdrop-blur-md border border-white/5 p-3 rounded-xl flex flex-col gap-2 pointer-events-auto">
+            <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 pointer-events-none">
+                <div className="bg-slate-900/80 backdrop-blur-md border border-white/5 p-2 md:p-3 rounded-xl flex flex-col gap-1.5 md:gap-2 pointer-events-auto">
                     <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></span>
-                        <span className="text-[10px] text-slate-300 font-medium">Critical (5+)</span>
+                        <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></span>
+                        <span className="text-[9px] md:text-[10px] text-slate-300 font-medium">Critical (5+)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span>
-                        <span className="text-[10px] text-slate-300 font-medium">Moderate (3-5)</span>
+                        <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span>
+                        <span className="text-[9px] md:text-[10px] text-slate-300 font-medium">Moderate (3-5)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>
-                        <span className="text-[10px] text-slate-300 font-medium">Monitoring (1-2)</span>
+                        <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>
+                        <span className="text-[9px] md:text-[10px] text-slate-300 font-medium">Monitoring (1-2)</span>
                     </div>
                 </div>
             </div>

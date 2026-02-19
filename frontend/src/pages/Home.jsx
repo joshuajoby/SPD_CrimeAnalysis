@@ -170,8 +170,8 @@ function Home() {
         </section>
 
         {/* LATEST INTELLIGENCE FEED - RESTORED & INLINED */}
-        <section className="py-24 bg-slate-50 relative border-b border-slate-200">
-          <div className="w-[85%] max-w-[1400px] mx-auto px-6">
+        <section className="py-16 md:py-24 bg-slate-50 relative border-b border-slate-200">
+          <div className="w-[95%] md:w-[85%] max-w-[1400px] mx-auto px-4 md:px-6">
             <div className="flex justify-between items-end mb-12">
               <div>
                 <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">Latest Intelligence</h2>
@@ -185,7 +185,7 @@ function Home() {
               </Button>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {news.map((item, idx) => (
                 <motion.div
                   key={idx}

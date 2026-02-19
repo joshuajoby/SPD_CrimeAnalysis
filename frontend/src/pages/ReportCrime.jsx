@@ -118,7 +118,7 @@ function ReportCrime() {
                                     </motion.div>
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-4">
-                                        <div className="grid grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="space-y-1.5">
                                                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center">
                                                     Crime Type <span className="text-red-500 ml-1">*</span>
@@ -153,7 +153,7 @@ function ReportCrime() {
                                                     required
                                                     value={formData.date}
                                                     onChange={handleChange}
-                                                    className="h-10 text-sm bg-slate-50"
+                                                    className="h-10 text-sm bg-slate-50 w-full"
                                                 />
                                             </div>
                                         </div>
