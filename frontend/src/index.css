@@ -37,7 +37,14 @@
 }
 
 @layer base {
-  html {
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     font-size: 22px;
   }
 
