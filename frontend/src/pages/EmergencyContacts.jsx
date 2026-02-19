@@ -63,7 +63,7 @@ function EmergencyContacts() {
         <div className="min-h-screen flex flex-col bg-background">
             <Navbar />
 
-            <main className="flex-grow pt-24 px-4 pb-12 w-full max-w-[95%] mx-auto">
+            <main className="flex-grow pt-24 px-6 pb-12 w-full max-w-7xl mx-auto">
                 <div className="w-full">
                     <div className="text-center mb-12">
                         <h1 className="text-4xl font-bold mb-4 text-red-600">Emergency Contacts</h1>

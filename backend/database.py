@@ -2,7 +2,7 @@ import os
 import sqlite3
 from typing import Optional
 
-DB_FILENAME = os.getenv("CRIME_DB", "crime_data.db")
+DB_FILENAME = os.getenv("CRIME_DB", os.path.join(os.path.dirname(__file__), "crime_data.db"))
 
 
 def get_connection(db_path: Optional[str] = None) -> sqlite3.Connection:
@@ -35,11 +35,52 @@ def create_table(db_path: Optional[str] = None) -> None:
                 published_at TEXT,
                 crime_type TEXT,
                 location TEXT,
-                credibility TEXT
+                credibility TEXT,
+                image_url TEXT
             )
             """
         )
 
+        # For development ease, we'll recreate the users table to ensure new schema
+        cursor.execute("DROP TABLE IF EXISTS users")
+
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                role TEXT DEFAULT 'admin',
+                full_name TEXT,
+                badge_number TEXT,
+                rank TEXT,
+                department TEXT,
+                contact TEXT,
+                email TEXT
+            )
+            """
+        )
+
+def seed_admin():
+    """Create a default admin user if one doesn't exist."""
+    from werkzeug.security import generate_password_hash
+    
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT count(*) FROM users WHERE username = ?", ('admin',))
+        if cursor.fetchone()[0] == 0:
+            print("Seeding default admin user...")
+            # Default password: 'admin'
+            pw_hash = generate_password_hash('admin')
+            cursor.execute("""
+                INSERT INTO users (
+                    username, password_hash, role, 
+                    full_name, badge_number, rank, department, contact, email
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, ('admin', pw_hash, 'admin', 'System Administrator', '001', 'Chief', 'IT Security', '555-0199', 'admin@spd.gov'))
+            conn.commit()
+
 
 if __name__ == "__main__":
     create_table()
+    seed_admin()
