@@ -55,23 +55,6 @@ Optimized for field use and emergency monitoring on any device.
 
 ---
 
-## 🚀 Deployment & Access
-
-### Public Portal
-Live Static Preview: [crime-watch-spd.surge.sh](http://crime-watch-spd.surge.sh)
-
-### Full Intelligence Preview (Localtunnel)
-Exposes the local backend for real-time map plotting and auth:
-```bash
-# Start backend
-python app.py
-# Start tunnel
-npx localtunnel --port 5173
-```
-*Note: Requires Tunnel Password (Host Machine Public IP).*
-
----
-
 ## 📚 Personnel Taxonomy (Supported Crime Types)
 - **Violent Crimes**: Murder, Homicide, Assault, Kidnapping.
 - **Property Crimes**: Theft, Robbery, Burglary, Vandalism.
@@ -80,5 +63,6 @@ npx localtunnel --port 5173
 ---
 
 **Built with Precision for SPD • February 2026**
+
 
 
