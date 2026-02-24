@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Shield, Search, AlertTriangle, CheckCircle, XCircle, ArrowRight, Loader2, Link, FileText, Info, AlertOctagon } from 'lucide-react'
+import { Shield, Search, AlertTriangle, CheckCircle, XCircle, ArrowRight, Loader2, Link, FileText, Info, AlertOctagon, Activity } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { Button } from '../components/ui/button'
@@ -209,8 +209,8 @@ function CredibilityCheck() {
                                         <div className="mb-4">
                                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Sentiment Scan</span>
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${result.sentiment === 'Negative' ? 'bg-red-100 text-red-800' :
-                                                    result.sentiment === 'Positive' ? 'bg-emerald-100 text-emerald-800' :
-                                                        'bg-slate-200 text-slate-800'
+                                                result.sentiment === 'Positive' ? 'bg-emerald-100 text-emerald-800' :
+                                                    'bg-slate-200 text-slate-800'
                                                 }`}>
                                                 {result.sentiment || 'Neutral'}
                                             </span>
