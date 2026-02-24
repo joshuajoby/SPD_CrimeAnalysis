@@ -64,5 +64,68 @@ Optimized for field use and emergency monitoring on any device.
 
 **Built with Precision for SPD • February 2026**
 
+---
 
+## 🚀 How to Run the Project Locally
 
+Follow these steps to set up the development environment for both the frontend and the backend.
+
+### 1. Prerequisites
+Ensure you have the following installed on your machine:
+- Node.js (v18+ recommended)
+- Python (3.9+ recommended)
+- Git
+
+### 2. Backend Setup (Flask + AI Engine)
+
+Open a terminal and navigate to the `backend` directory:
+```bash
+cd SPD_CrimeAnalysis/backend
+```
+
+Create a virtual environment:
+```bash
+# Windows
+python -m venv venv
+.\venv\Scripts\activate
+
+# macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install the required Python packages:
+```bash
+pip install -r requirements.txt
+```
+
+Set up the Gemini AI Integration:
+For the extensive credibility analysis feature to work, you must provide a Gemini API Key.
+Create a `.env` file inside the `backend/` folder and add your key:
+```env
+GEMINI_API_KEY="your_api_key_here"
+```
+
+Start the backend server:
+```bash
+python app.py
+```
+> The server will start on `http://127.0.0.1:5000` and the auto-fetch background thread will begin collecting intelligence immediately.
+
+### 3. Frontend Setup (React + Vite)
+
+Open a **new** terminal window and navigate to the `frontend` directory:
+```bash
+cd SPD_CrimeAnalysis/frontend
+```
+
+Install the Node dependencies:
+```bash
+npm install
+```
+
+Start the development server:
+```bash
+npm run dev
+```
+> The frontend will typically start on `http://localhost:5173`. Open this URL in your browser to view the Command Center!
