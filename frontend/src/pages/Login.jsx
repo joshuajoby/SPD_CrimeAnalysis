@@ -19,8 +19,6 @@ const Login = () => {
         username: '',
         password: '',
         full_name: '',
-        badge_number: '',
-        rank: '',
         department: '',
         contact: '',
         email: ''
@@ -54,7 +52,7 @@ const Login = () => {
 
             if (response.ok) {
                 if (isRegistering) {
-                    setSuccess('Officer registered successfully. Please login.');
+                    setSuccess('Admin registered successfully. Please login.');
                     setIsRegistering(false);
                     setFormData(prev => ({ ...prev, password: '' })); // Clear password
                 } else {
@@ -114,10 +112,10 @@ const Login = () => {
                 <div className="w-full max-w-md space-y-6 my-auto">
                     <div className="text-center lg:text-left">
                         <h2 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-                            {isRegistering ? 'Officer Registration' : 'Welcome Back'}
+                            {isRegistering ? 'Admin Registration' : 'Welcome Back'}
                         </h2>
                         <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">
-                            {isRegistering ? 'Enter valid credentials to create a new personnel record.' : 'Please authenticate to access the admin dashboard.'}
+                            {isRegistering ? 'Enter valid credentials to create a new admin record.' : 'Please authenticate to access the admin dashboard.'}
                         </p>
                     </div>
 
@@ -157,43 +155,25 @@ const Login = () => {
                                         exit={{ opacity: 0, height: 0 }}
                                         className="space-y-4 overflow-hidden"
                                     >
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-1 gap-4">
                                             <div className="space-y-1">
                                                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Full Name</label>
-                                                <Input name="full_name" placeholder="John Doe" value={formData.full_name} onChange={handleInputChange} className="h-9 bg-slate-50" required={isRegistering} />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Badge Number</label>
-                                                <Input name="badge_number" placeholder="ID-XXXX" value={formData.badge_number} onChange={handleInputChange} className="h-9 bg-slate-50" required={isRegistering} />
+                                                <Input name="full_name" placeholder="Rahul Sharma" value={formData.full_name} onChange={handleInputChange} className="h-9 bg-slate-50" required={isRegistering} />
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="space-y-1">
-                                                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Rank</label>
-                                                <Select onValueChange={(val) => handleSelectChange('rank', val)} value={formData.rank}>
-                                                    <SelectTrigger className="h-9 bg-slate-50"><SelectValue placeholder="Select Rank" /></SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="Officer">Officer</SelectItem>
-                                                        <SelectItem value="Detective">Detective</SelectItem>
-                                                        <SelectItem value="Sergeant">Sergeant</SelectItem>
-                                                        <SelectItem value="Lieutenant">Lieutenant</SelectItem>
-                                                        <SelectItem value="Captain">Captain</SelectItem>
-                                                        <SelectItem value="Chief">Chief</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
+                                        <div className="grid grid-cols-1 gap-4">
                                             <div className="space-y-1">
                                                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Department</label>
                                                 <Select onValueChange={(val) => handleSelectChange('department', val)} value={formData.department}>
                                                     <SelectTrigger className="h-9 bg-slate-50"><SelectValue placeholder="Select Dept" /></SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="Patrol">Patrol</SelectItem>
-                                                        <SelectItem value="Homicide">Homicide</SelectItem>
-                                                        <SelectItem value="Cyber Crime">Cyber Crime</SelectItem>
-                                                        <SelectItem value="Narcotics">Narcotics</SelectItem>
-                                                        <SelectItem value="Intelligence">Intelligence</SelectItem>
-                                                        <SelectItem value="Administration">Administration</SelectItem>
+                                                        <SelectItem value="IT Security">IT Security</SelectItem>
+                                                        <SelectItem value="Operations">Operations</SelectItem>
+                                                        <SelectItem value="Risk Management">Risk Management</SelectItem>
+                                                        <SelectItem value="Legal">Legal</SelectItem>
+                                                        <SelectItem value="Analysis">Analysis</SelectItem>
+                                                        <SelectItem value="Management">Management</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </div>
@@ -203,14 +183,14 @@ const Login = () => {
                                             <label className="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Official Email</label>
                                             <div className="relative">
                                                 <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                                                <Input name="email" type="email" placeholder="officer@spd.gov" value={formData.email} onChange={handleInputChange} className="pl-9 h-9 bg-slate-50" required={isRegistering} />
+                                                <Input name="email" type="email" placeholder="admin@company.in" value={formData.email} onChange={handleInputChange} className="pl-9 h-9 bg-slate-50" required={isRegistering} />
                                             </div>
                                         </div>
                                         <div className="space-y-1">
                                             <label className="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">Contact Number</label>
                                             <div className="relative">
                                                 <Phone className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                                                <Input name="contact" placeholder="+1 (555) 000-0000" value={formData.contact} onChange={handleInputChange} className="pl-9 h-9 bg-slate-50" required={isRegistering} />
+                                                <Input name="contact" placeholder="+91 98765 43210" value={formData.contact} onChange={handleInputChange} className="pl-9 h-9 bg-slate-50" required={isRegistering} />
                                             </div>
                                         </div>
                                     </motion.div>
@@ -259,23 +239,23 @@ const Login = () => {
 
                             <Button
                                 type="submit"
-                                className="w-full h-11 text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-900/20 mt-2"
+                                className="w-full h-12 text-base font-bold bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-900/20 mt-2"
                                 disabled={loading}
                             >
                                 {loading ? (
                                     <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...</>
                                 ) : (
-                                    <>{isRegistering ? 'Register Officer' : 'Secure Login'} <ArrowRight className="ml-2 h-4 w-4" /></>
+                                    <>{isRegistering ? 'Register Admin' : 'Secure Login'} <ArrowRight className="ml-2 h-4 w-4" /></>
                                 )}
                             </Button>
                         </form>
 
-                        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs">
+                        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-sm">
                             <button
                                 onClick={() => setIsRegistering(!isRegistering)}
                                 className="text-blue-600 hover:text-blue-700 font-bold hover:underline"
                             >
-                                {isRegistering ? 'Back to Login' : 'Register New Officer'}
+                                {isRegistering ? 'Back to Login' : 'Register New Admin'}
                             </button>
 
                             <button

@@ -38,7 +38,8 @@ function CredibilityCheck() {
                     status: 'Error',
                     domain: 'Unknown',
                     sentiment: 'Error',
-                    factCheck: data.error || 'Failed to analyze URL.'
+                    factCheck: data.error || 'Failed to analyze URL.',
+                    justification: 'Server encountered an error processing this request.'
                 })
             }
         } catch (error) {
@@ -47,7 +48,8 @@ function CredibilityCheck() {
                 status: 'Connection Failed',
                 domain: 'Unknown',
                 sentiment: 'Network Error',
-                factCheck: 'Could not connect to analysis server.'
+                factCheck: 'Could not connect to analysis server.',
+                justification: 'Failed to reach the extensive AI model.'
             })
         } finally {
             setLoading(false)
@@ -156,7 +158,7 @@ function CredibilityCheck() {
                                 </div>
 
                                 {/* Metrics Dashboard */}
-                                <div className="grid md:grid-cols-3 gap-4">
+                                <div className="grid md:grid-cols-3 gap-4 mb-6">
                                     {/* Trust Score Card */}
                                     <div className={`rounded-2xl p-6 text-white text-center flex flex-col justify-center items-center shadow-lg transform transition-transform hover:scale-105 ${result.score > 75 ? 'bg-gradient-to-br from-emerald-500 to-emerald-600' :
                                         result.score > 50 ? 'bg-gradient-to-br from-amber-500 to-amber-600' :
@@ -192,6 +194,33 @@ function CredibilityCheck() {
                                         <p className="text-sm font-bold text-slate-900 leading-snug">
                                             {result.factCheck}
                                         </p>
+                                    </div>
+                                </div>
+
+                                {/* Extensive AI Logic Block */}
+                                <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-xl relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                                        <Shield className="w-32 h-32" />
+                                    </div>
+                                    <h3 className="text-slate-900 font-bold flex items-center gap-2 mb-3">
+                                        <Activity className="w-5 h-5 text-blue-500" /> Extensive Model Reasoning
+                                    </h3>
+                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-5">
+                                        <div className="mb-4">
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Sentiment Scan</span>
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${result.sentiment === 'Negative' ? 'bg-red-100 text-red-800' :
+                                                    result.sentiment === 'Positive' ? 'bg-emerald-100 text-emerald-800' :
+                                                        'bg-slate-200 text-slate-800'
+                                                }`}>
+                                                {result.sentiment || 'Neutral'}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">AI Logic & Justification</span>
+                                            <p className="text-sm text-slate-700 leading-relaxed italic">
+                                                "{result.justification || 'Analyzed using baseline Keyword Heuristics.'}"
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 

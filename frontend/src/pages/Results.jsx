@@ -31,30 +31,42 @@ function Results() {
     location: 'All'
   })
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true)
-        const [newsData, statsData, locationsData, credibilityData] = await Promise.all([
-          fetchNews({ limit: 200 }), // Increased limit for better population
-          fetchStatistics(),
-          fetchLocations(),
-          fetchCredibilityDistribution()
-        ])
+  const loadData = async (isInitial = false) => {
+    try {
+      if (isInitial) setLoading(true)
+      const [newsData, statsData, locationsData, credibilityData] = await Promise.all([
+        fetchNews({ limit: 200 }), // Increased limit for better population
+        fetchStatistics(),
+        fetchLocations(),
+        fetchCredibilityDistribution()
+      ])
 
-        setAllNews(newsData || [])
-        setStatistics(statsData || { crime_types: [], credibility: [], total_articles: 0 })
-        setLocations(locationsData || [])
-        setCredibilityDist(credibilityData || [])
-      } catch (err) {
-        console.error('Error loading data:', err)
-      } finally {
-        setLoading(false)
-      }
+      setAllNews(newsData || [])
+      setStatistics(statsData || { crime_types: [], credibility: [], total_articles: 0 })
+      setLocations(locationsData || [])
+      setCredibilityDist(credibilityData || [])
+    } catch (err) {
+      console.error('Error loading data:', err)
+    } finally {
+      if (isInitial) setLoading(false)
     }
+  }
 
-    loadData()
+  useEffect(() => {
+    loadData(true)
+    const intervalId = setInterval(() => loadData(false), 10000)
+
+    return () => clearInterval(intervalId)
   }, [])
+
+  const handleManualRefresh = async () => {
+    try {
+      await fetch('/api/fetch-news-now', { method: 'POST' });
+      await loadData(false);
+    } catch (e) {
+      console.error("Failed manual refresh:", e);
+    }
+  }
 
   // Apply filters and sorting
   useEffect(() => {
@@ -133,7 +145,7 @@ function Results() {
             <p className="text-xl text-muted-foreground">Real-time intelligence and community safety metrics.</p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" size="lg" onClick={() => window.location.reload()}>
+            <Button variant="outline" size="lg" onClick={handleManualRefresh}>
               <RefreshCw className="mr-2 h-5 w-5" /> Refresh Intelligence
             </Button>
             <Button variant="default" size="lg" onClick={() => navigate('/verify')}>

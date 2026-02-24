@@ -18,16 +18,23 @@ function Home() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/news?limit=6')
-      .then(res => res.json())
-      .then(data => {
-        setNews(data)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error("Failed to fetch news", err)
-        setLoading(false)
-      })
+    const fetchNewsData = () => {
+      fetch('/api/news?limit=6')
+        .then(res => res.json())
+        .then(data => {
+          setNews(data)
+          setLoading(false)
+        })
+        .catch(err => {
+          console.error("Failed to fetch news", err)
+          setLoading(false)
+        })
+    };
+
+    fetchNewsData(); // Initial load
+    const intervalId = setInterval(fetchNewsData, 10000); // Poll every 10 seconds
+
+    return () => clearInterval(intervalId); // Cleanup
   }, [])
 
   const handleSearch = (e) => {
@@ -69,24 +76,24 @@ function Home() {
               transition={{ duration: 0.8 }}
               className="max-w-[700px] mx-auto"
             >
-              <p className="text-amber-400 font-bold tracking-[0.2em] text-[10px] md:text-xs uppercase mb-3 drop-shadow-md">
+              <p className="text-amber-400 font-bold tracking-[0.2em] text-xs md:text-sm uppercase mb-4 drop-shadow-md">
                 Real-Time Global Surveillance
               </p>
 
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight mb-4 leading-tight text-white drop-shadow-xl">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-tight text-white drop-shadow-2xl">
                 A growing footprint <br />
                 of <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">trust.</span>
               </h1>
 
-              <p className="text-sm text-slate-200 mb-6 leading-relaxed max-w-md mx-auto font-normal drop-shadow">
+              <p className="text-base md:text-xl text-slate-200 mb-10 leading-relaxed max-w-2xl mx-auto font-medium drop-shadow-lg">
                 Monitoring activity across 1,400+ distinct nodes. <br className="hidden md:block" /> Each data point represents a commitment to public safety.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button onClick={() => document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' })} size="sm" className="bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-full h-9 px-5 text-xs font-bold shadow-lg shadow-amber-500/20 transition-all hover:scale-105 hover:shadow-amber-500/40">
-                  Explore Intelligence Map <ArrowRight className="ml-2 w-3 h-3" />
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button onClick={() => document.getElementById('map-section').scrollIntoView({ behavior: 'smooth' })} size="lg" className="bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-full h-14 px-8 text-sm md:text-base font-bold shadow-xl shadow-amber-500/20 transition-all hover:scale-105 hover:shadow-amber-500/40">
+                  Explore Intelligence Map <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
-                <Button onClick={() => navigate('/report')} variant="outline" size="sm" className="rounded-full h-9 px-5 text-xs font-bold bg-white/10 text-white border border-white/30 hover:bg-white hover:text-slate-900 backdrop-blur-sm transition-all hover:scale-105">
+                <Button onClick={() => navigate('/report')} variant="outline" size="lg" className="rounded-full h-14 px-8 text-sm md:text-base font-bold bg-white/10 text-white border border-white/30 hover:bg-white hover:text-slate-900 backdrop-blur-sm transition-all hover:scale-105 shadow-xl">
                   Report Incident
                 </Button>
               </div>

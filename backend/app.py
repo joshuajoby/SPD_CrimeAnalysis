@@ -37,7 +37,7 @@ def get_news():
             query += " AND credibility = ?"
             params.append(credibility)
         
-        query += " ORDER BY published_at DESC LIMIT ?"
+        query += " ORDER BY id DESC LIMIT ?"
         params.append(limit)
         
         cursor.execute(query, params)
@@ -178,8 +178,8 @@ def analyze_url_endpoint():
 
         # Analyze Content
         from news_logic import analyze_news
-        # Use simple keyphrase analysis for now
-        analysis = analyze_news(title, description, source=url)
+        
+        analysis = analyze_news(title, description, source=site_name)
         
         return jsonify({
             "title": title,
@@ -189,8 +189,9 @@ def analyze_url_endpoint():
             "summary": description[:300] + "..." if len(description) > 300 else description,
             "score": 85 if analysis['credibility'] == 'High' else 60 if analysis['credibility'] == 'Medium' else 40,
             "status": f"Rated {analysis['credibility']} Trust",
-            "factCheck": "No flags found in public databases." if analysis['credibility'] == 'High' else "Caution: Source not in verified whitelist.",
-            "sentiment": "Neutral" # Placeholder
+            "factCheck": analysis.get('fact_check', 'Fact check unavailable.'),
+            "sentiment": analysis.get('sentiment', 'Neutral'),
+            "justification": analysis.get('justification', 'No logic provided.')
         })
 
     except Exception as e:
@@ -216,14 +217,12 @@ def register():
     
     # New Fields
     full_name = data.get('full_name')
-    badge_number = data.get('badge_number')
-    rank = data.get('rank')
     department = data.get('department')
     contact = data.get('contact')
     email = data.get('email')
     
-    if not username or not password or not full_name or not badge_number:
-        return jsonify({"error": "Missing required fields (Username, Password, Name, Badge #)"}), 400
+    if not username or not password or not full_name:
+        return jsonify({"error": "Missing required fields (Username, Password, Name)"}), 400
         
     from werkzeug.security import generate_password_hash
     password_hash = generate_password_hash(password)
@@ -234,11 +233,11 @@ def register():
             cursor.execute("""
                 INSERT INTO users (
                     username, password_hash, role, 
-                    full_name, badge_number, rank, department, contact, email
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (username, password_hash, 'admin', full_name, badge_number, rank, department, contact, email))
+                    full_name, department, contact, email
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (username, password_hash, 'admin', full_name, department, contact, email))
             conn.commit()
-        return jsonify({"message": "Officer registered successfully"}), 201
+        return jsonify({"message": "Admin registered successfully"}), 201
     except Exception as e:
         return jsonify({"error": "Username or Badge Number already exists"}), 400
 
@@ -258,7 +257,7 @@ def login():
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT password_hash, role, full_name, badge_number, rank, department, contact, email 
+            SELECT password_hash, role, full_name, department, contact, email 
             FROM users WHERE username = ?
         """, (username,))
         user = cursor.fetchone()
@@ -269,11 +268,9 @@ def login():
             "username": username,
             "role": user[1],
             "full_name": user[2],
-            "badge_number": user[3],
-            "rank": user[4],
-            "department": user[5],
-            "contact": user[6],
-            "email": user[7]
+            "department": user[3],
+            "contact": user[4],
+            "email": user[5]
         }
         
         return jsonify({
@@ -286,4 +283,20 @@ def login():
 
 
 if __name__ == "__main__":
+    def auto_fetch():
+        import time
+        from fetch_news import fetch_and_store
+        while True:
+            try:
+                print("Auto-fetching news in background...")
+                fetch_and_store()
+            except Exception as e:
+                print("Failed to auto-fetch news:", e)
+            
+            # Wait 30 seconds before polling news again
+            time.sleep(30)
+
+    import threading
+    threading.Thread(target=auto_fetch, daemon=True).start()
+
     app.run(debug=True, host='127.0.0.1', port=5000)

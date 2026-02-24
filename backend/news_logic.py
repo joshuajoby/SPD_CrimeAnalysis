@@ -1,7 +1,18 @@
 # news_logic.py
 # Member 2 – Backend Logic
-# Purpose: Extract meaningful information from news text
+# Purpose: Extract meaningful information from news text using both heuristics and extensive AI models
+import os
+import json
+import re
 
+try:
+    import google.generativeai as genai
+    from dotenv import load_dotenv
+    load_dotenv()
+    genai.configure(api_key=os.environ.get("GEMINI_API_KEY", ""))
+    gemini_model = genai.GenerativeModel('gemini-2.5-flash')
+except ImportError:
+    gemini_model = None
 CRIME_KEYWORDS = {
     "theft": ["theft", "robbery", "stolen", "burglary", "snatching", "looted", "thief"],
     "fraud": ["fraud", "scam", "cheated", "laundering", "extortion", "embezzlement", "cybercrime", "phishing", "fake"],
@@ -105,11 +116,52 @@ def calculate_credibility(source, sensational_count):
 
 def analyze_news(title, description, source="Unknown"):
     text = f"{title} {description}"
-    sensational_count = count_sensational_words(text)
     
-    return {
-        "crime_type": detect_crime_type(text),
-        "location": detect_location(text),
+    # Base heuristic analysis (Fast)
+    crime_type = detect_crime_type(text)
+    location = detect_location(text)
+    sensational_count = count_sensational_words(text)
+    fallback_cred = calculate_credibility(source, sensational_count)
+    
+    result = {
+        "crime_type": crime_type,
+        "location": location,
         "sensational_count": sensational_count,
-        "credibility": calculate_credibility(source, sensational_count)
+        "credibility": fallback_cred,
+        "justification": "Analyzed using baseline keyword heuristics. Please add GEMINI_API_KEY in .env for extensive AI analysis.",
+        "fact_check": "Insufficient data for detailed fact check.",
+        "sentiment": "Neutral"
     }
+    
+    # Extensive AI Analysis (Accurate & Deep)
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if gemini_model and api_key and api_key != "YOUR_API_KEY_HERE":
+        prompt = f"""
+        You are an elite, objective intelligence analyst.
+        Analyze the following news report for credibility, factuality, and bias.
+        
+        Source Publisher: {source}
+        Article Title: {title}
+        Article Content Snippet: {description}
+        
+        Respond ONLY with a valid JSON object containing exactly these keys:
+        - "credibility": String, strictly one of ["High", "Medium", "Low"]. Rely heavily on the reputation of the Source Publisher and the presence of sensationalism.
+        - "justification": String, detailed transparent reasoning for the credibility score. Mention source reputation, sensational language, and potential bias in 1-2 thoughtful sentences.
+        - "fact_check": String, a brief fact-checking note describing if the claims seem verified or anecdotal.
+        - "sentiment": String, strictly one of ["Positive", "Neutral", "Negative"].
+        """
+        try:
+            response = gemini_model.generate_content(prompt)
+            match = re.search(r'\{.*\}', response.text, re.DOTALL)
+            if match:
+                ai_data = json.loads(match.group(0))
+                cred = ai_data.get("credibility", "")
+                if cred in ["High", "Medium", "Low"]:
+                    result["credibility"] = cred
+                result["justification"] = ai_data.get("justification", result["justification"])
+                result["fact_check"] = ai_data.get("fact_check", result["fact_check"])
+                result["sentiment"] = ai_data.get("sentiment", result["sentiment"])
+        except Exception as e:
+            print(f"[AI Analysis Warning] Failed to reach Gemini: {e}")
+            
+    return result

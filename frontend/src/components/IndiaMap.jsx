@@ -31,34 +31,34 @@ const PulsingMarker = ({ position, city, count, reports }) => {
     const icon = L.divIcon({
         className: 'custom-pulsing-icon',
         html: `
-            <div style="position: relative; width: 40px; height: 40px;">
+            <div style="position: relative; width: 28px; height: 28px;">
                 <div style="
                     position: absolute;
                     inset: 0;
                     border-radius: 50%;
                     background-color: ${colorHex};
-                    opacity: 0.75;
-                    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+                    opacity: 0.5;
+                    animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
                 "></div>
                 <div style="
                     position: relative;
-                    width: 40px;
-                    height: 40px;
+                    width: 28px;
+                    height: 28px;
                     border-radius: 50%;
                     background-color: ${colorHex};
-                    border: 3px solid white;
+                    border: 2px solid rgba(255,255,255,0.9);
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     color: white;
-                    font-weight: bold;
-                    font-size: 14px;
-                    box-shadow: 0 0 20px ${colorHex};
+                    font-weight: 600;
+                    font-size: 11px;
+                    box-shadow: 0 0 10px ${colorHex};
                 ">${count}</div>
             </div>
         `,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
     });
 
     return (
@@ -151,6 +151,9 @@ function IndiaMap() {
             }
         };
         fetchData();
+        const intervalId = setInterval(fetchData, 10000); // 10s refresh
+
+        return () => clearInterval(intervalId);
     }, []);
 
     return (
@@ -236,7 +239,7 @@ function IndiaMap() {
                 }
                 @keyframes ping {
                     75%, 100% {
-                        transform: scale(2);
+                        transform: scale(1.6);
                         opacity: 0;
                     }
                 }

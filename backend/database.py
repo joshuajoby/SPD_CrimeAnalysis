@@ -75,9 +75,9 @@ def seed_admin():
             cursor.execute("""
                 INSERT INTO users (
                     username, password_hash, role, 
-                    full_name, badge_number, rank, department, contact, email
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, ('admin', pw_hash, 'admin', 'System Administrator', '001', 'Chief', 'IT Security', '555-0199', 'admin@spd.gov'))
+                    full_name, department, contact, email
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, ('admin', pw_hash, 'admin', 'System Administrator', 'IT Security', '+91 98765 43210', 'admin@company.in'))
             conn.commit()
 
 
