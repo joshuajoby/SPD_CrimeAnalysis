@@ -169,29 +169,39 @@ def analyze_url_endpoint():
         import urllib3
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         
-        response = requests.get(url, headers=headers, timeout=15, verify=False)
-        
-        # Check if we were blocked by the website's security
-        if response.status_code == 403:
-            return jsonify({"error": "This website's security (WAF) is actively blocking our AI from reading its content. Please try another source."}), 400
+        try:
+            # Scrape the URL
+            response = requests.get(url, headers=headers, timeout=12, verify=False)
             
-        response.raise_for_status()
-        
-        # Extract Title and Metadata
-        import re
-        html = response.text
-        
-        # Helper to extract meta tags
-        def get_meta(property_name):
-            match = re.search(r'<meta\s+(?:property|name)=["\']' + property_name + r'["\']\s+content=["\'](.*?)["\']', html, re.IGNORECASE)
-            return match.group(1) if match else None
+            # Check if we were blocked by the website's security
+            if response.status_code == 403 or response.status_code == 400:
+                 raise requests.exceptions.RequestException(f"Blocked or Bad Request: {response.status_code}")
+                 
+            response.raise_for_status()
+            
+            # Extract Title and Metadata
+            import re
+            html = response.text
+            
+            # Helper to extract meta tags
+            def get_meta(property_name):
+                match = re.search(r'<meta\s+(?:property|name)=["\']' + property_name + r'["\']\s+content=["\'](.*?)["\']', html, re.IGNORECASE)
+                return match.group(1) if match else None
 
-        title_match = re.search(r'<title>(.*?)</title>', html, re.IGNORECASE)
-        title = get_meta('og:title') or (title_match.group(1) if title_match else "Unknown Title")
-        
-        image = get_meta('og:image')
-        description = get_meta('og:description') or get_meta('description') or "No summary available for this article."
-        site_name = get_meta('og:site_name') or url.split('/')[2]
+            title_match = re.search(r'<title>(.*?)</title>', html, re.IGNORECASE)
+            title = get_meta('og:title') or (title_match.group(1) if title_match else "Unknown Title")
+            
+            image = get_meta('og:image')
+            description = get_meta('og:description') or get_meta('description') or "No summary available for this article."
+            site_name = get_meta('og:site_name') or url.split('/')[2]
+            
+        except requests.exceptions.RequestException as e:
+            # Fallback if scraping the article completely fails (WAF, 400, timeouts)
+            # We skip the scrape and just ask the AI to analyze the URL domain name
+            title = "Unknown Article"
+            description = f"Content could not be scraped due to security blocks: {e}"
+            image = None
+            site_name = url.split('/')[2] if '//' in url else "Unknown Source"
 
         # Analyze Content
         from news_logic import analyze_news

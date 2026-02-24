@@ -9,10 +9,11 @@ try:
     import google.generativeai as genai
     from dotenv import load_dotenv
     load_dotenv()
-    genai.configure(api_key=os.environ.get("GEMINI_API_KEY", ""))
-    gemini_model = genai.GenerativeModel('gemini-2.5-flash')
+    # Initial load attempt
+    if os.environ.get("GEMINI_API_KEY"):
+        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 except ImportError:
-    gemini_model = None
+    pass
 CRIME_KEYWORDS = {
     "theft": ["theft", "robbery", "stolen", "burglary", "snatching", "looted", "thief"],
     "fraud": ["fraud", "scam", "cheated", "laundering", "extortion", "embezzlement", "cybercrime", "phishing", "fake"],
@@ -134,23 +135,29 @@ def analyze_news(title, description, source="Unknown"):
     }
     
     # Extensive AI Analysis (Accurate & Deep)
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if gemini_model and api_key and api_key != "YOUR_API_KEY_HERE":
-        prompt = f"""
-        You are an elite, objective intelligence analyst.
-        Analyze the following news report for credibility, factuality, and bias.
-        
-        Source Publisher: {source}
-        Article Title: {title}
-        Article Content Snippet: {description}
-        
-        Respond ONLY with a valid JSON object containing exactly these keys:
-        - "credibility": String, strictly one of ["High", "Medium", "Low"]. Rely heavily on the reputation of the Source Publisher and the presence of sensationalism.
-        - "justification": String, detailed transparent reasoning for the credibility score. Mention source reputation, sensational language, and potential bias in 1-2 thoughtful sentences.
-        - "fact_check": String, a brief fact-checking note describing if the claims seem verified or anecdotal.
-        - "sentiment": String, strictly one of ["Positive", "Neutral", "Negative"].
-        """
+    load_dotenv() # Reload in case .env was just modified
+    api_key = os.environ.get("GEMINI_API_KEY", "")
+    
+    if api_key and api_key != "YOUR_API_KEY_HERE" and api_key != "":
         try:
+            genai.configure(api_key=api_key)
+            gemini_model = genai.GenerativeModel('gemini-2.5-flash')
+            
+            prompt = f"""
+            You are an elite, objective intelligence analyst.
+            Analyze the following news report for credibility, factuality, and bias.
+            
+            Source Publisher: {source}
+            Article Title: {title}
+            Article Content Snippet: {description}
+            
+            Respond ONLY with a valid JSON object containing exactly these keys:
+            - "credibility": String, strictly one of ["High", "Medium", "Low"]. Rely heavily on the reputation of the Source Publisher and the presence of sensationalism.
+            - "justification": String, detailed transparent reasoning for the credibility score. Mention source reputation, sensational language, and potential bias in 1-2 thoughtful sentences.
+            - "fact_check": String, a brief fact-checking note describing if the claims seem verified or anecdotal.
+            - "sentiment": String, strictly one of ["Positive", "Neutral", "Negative"].
+            """
+            
             response = gemini_model.generate_content(prompt)
             match = re.search(r'\{.*\}', response.text, re.DOTALL)
             if match:
@@ -162,6 +169,13 @@ def analyze_news(title, description, source="Unknown"):
                 result["fact_check"] = ai_data.get("fact_check", result["fact_check"])
                 result["sentiment"] = ai_data.get("sentiment", result["sentiment"])
         except Exception as e:
-            print(f"[AI Analysis Warning] Failed to reach Gemini: {e}")
+            error_msg = str(e)
+            print(f"[AI Analysis Warning] Failed to reach Gemini: {error_msg}")
+            
+            # Explicitly tell the user the API failed rather than just silently dropping to local heuristics
+            if "429" in error_msg or "quota" in error_msg.lower():
+                 result["justification"] = "Extensive AI Analysis Unavailable: The Google Gemini Free Tier Daily/Minute Quota limit has been exceeded. Falling back to local keyword heuristics."
+            else:
+                 result["justification"] = f"Extensive AI Analysis Unavailable: Failed to connect to Gemini API ({error_msg})."
             
     return result

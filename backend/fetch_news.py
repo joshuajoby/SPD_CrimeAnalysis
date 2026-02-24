@@ -146,7 +146,9 @@ def fetch_and_store(db_path: Optional[str] = None) -> None:
                 ]
                 image_url = random.choice(fallback_images)
 
-            # ANALYZE CONTENT
+            # ANALYZE CONTENT WITH QUOTA THROTTLING
+            import time
+            time.sleep(4.5)  # 60s / 15 req = 4s. Buffer to stay strictly below 15 Requests Per Minute limit.
             from news_logic import analyze_news
             analysis = analyze_news(title, clean_desc, source)
 
