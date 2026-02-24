@@ -5,6 +5,7 @@ import { Search, BarChart3, ShieldCheck, MapPin, Bell, Activity, ArrowRight, Shi
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import IndiaMap from '../components/IndiaMap' // New Component
+import { fetchNews } from '../utils/api'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Card, CardContent } from '../components/ui/card'
@@ -18,21 +19,20 @@ function Home() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchNewsData = () => {
-      fetch('/api/news?limit=6')
-        .then(res => res.json())
-        .then(data => {
-          setNews(data)
-          setLoading(false)
-        })
-        .catch(err => {
-          console.error("Failed to fetch news", err)
-          setLoading(false)
-        })
+    let intervalId;
+
+    const loadNews = async () => {
+      try {
+        const data = await fetchNews({ limit: 6 });
+        setNews(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Home feed fetch error:", error);
+      }
     };
 
-    fetchNewsData(); // Initial load
-    const intervalId = setInterval(fetchNewsData, 10000); // Poll every 10 seconds
+    loadNews();
+    intervalId = setInterval(loadNews, 10000);
 
     return () => clearInterval(intervalId); // Cleanup
   }, [])
@@ -197,9 +197,8 @@ function Home() {
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
-                  viewport={{ once: true }}
                 >
                   <a href={item.url} target="_blank" rel="noopener noreferrer" className="block h-full group">
                     <Card className="h-full border-0 shadow-md bg-white overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
@@ -233,9 +232,9 @@ function Home() {
                             {item.title}
                           </h3>
 
-                          {item.summary && (
+                          {item.description && (
                             <p className="text-slate-500 text-xs leading-relaxed line-clamp-2 mb-4">
-                              {item.summary}
+                              {item.description}
                             </p>
                           )}
 
