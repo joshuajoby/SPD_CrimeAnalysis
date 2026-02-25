@@ -50,37 +50,56 @@ def get_news():
 @app.route("/api/statistics", methods=['GET'])
 def get_statistics():
     """Get crime statistics: type distribution, counts, credibility breakdown."""
+    crime_type = request.args.get('crime_type')
+    location = request.args.get('location')
+    credibility = request.args.get('credibility')
+
     with get_connection() as conn:
         cursor = conn.cursor()
         
+        # Build filter clause
+        filter_clause = " WHERE 1=1"
+        params = []
+        if crime_type and crime_type != 'All':
+            filter_clause += " AND crime_type = ?"
+            params.append(crime_type)
+        if location and location != 'All':
+            filter_clause += " AND location = ?"
+            params.append(location)
+        if credibility and credibility != 'All':
+            filter_clause += " AND credibility = ?"
+            params.append(credibility)
+
         # Crime type breakdown
-        cursor.execute("""
+        query_types = """
             SELECT crime_type, COUNT(*) as count
             FROM news
-            WHERE crime_type IS NOT NULL AND crime_type != 'unknown'
+            """ + filter_clause + """ AND crime_type IS NOT NULL AND crime_type != 'unknown'
             GROUP BY crime_type
             ORDER BY count DESC
-        """)
+        """
+        cursor.execute(query_types, params)
         crime_stats = [{'name': r[0], 'value': r[1]} for r in cursor.fetchall()]
         
         # Credibility breakdown
-        cursor.execute("""
+        query_cred = """
             SELECT credibility, COUNT(*) as count
             FROM news
-            WHERE credibility IS NOT NULL
+            """ + filter_clause + """ AND credibility IS NOT NULL
             GROUP BY credibility
             ORDER BY count DESC
-        """)
+        """
+        cursor.execute(query_cred, params)
         credibility_stats = [{'name': r[0], 'count': r[1]} for r in cursor.fetchall()]
         
         # Total stats
-        cursor.execute("SELECT COUNT(*) FROM news")
+        cursor.execute("SELECT COUNT(*) FROM news" + filter_clause, params)
         total_articles = cursor.fetchone()[0]
         
         cursor.execute("""
             SELECT COUNT(*) FROM news
-            WHERE location IS NOT NULL AND location != 'Unknown'
-        """)
+            """ + filter_clause + """ AND location IS NOT NULL AND location != 'Unknown'
+        """, params)
         articles_with_location = cursor.fetchone()[0]
 
     return jsonify({
@@ -94,18 +113,31 @@ def get_statistics():
 @app.route("/api/locations", methods=['GET'])
 def get_locations():
     """Get location-based crime data."""
+    crime_type = request.args.get('crime_type')
+    credibility = request.args.get('credibility')
+
     with get_connection() as conn:
         cursor = conn.cursor()
         
+        filter_clause = " WHERE location IS NOT NULL AND location != 'Unknown'"
+        params = []
+        if crime_type and crime_type != 'All':
+            filter_clause += " AND crime_type = ?"
+            params.append(crime_type)
+        if credibility and credibility != 'All':
+            filter_clause += " AND credibility = ?"
+            params.append(credibility)
+
         # Location breakdown
-        cursor.execute("""
+        query = """
             SELECT location, COUNT(*) as count, 
                    SUM(CASE WHEN credibility='High' THEN 1 ELSE 0 END) as high_credibility
             FROM news
-            WHERE location IS NOT NULL AND location != 'Unknown'
+            """ + filter_clause + """
             GROUP BY location
             ORDER BY count DESC
-        """)
+        """
+        cursor.execute(query, params)
         locations = [
             {'name': r[0], 'articles': r[1], 'high_credibility': r[2]}
             for r in cursor.fetchall()
@@ -117,20 +149,33 @@ def get_locations():
 @app.route("/api/credibility-distribution", methods=['GET'])
 def get_credibility_distribution():
     """Get credibility distribution with article counts."""
+    crime_type = request.args.get('crime_type')
+    location = request.args.get('location')
+
     with get_connection() as conn:
         cursor = conn.cursor()
         
-        cursor.execute("""
+        filter_clause = " WHERE credibility IS NOT NULL"
+        params = []
+        if crime_type and crime_type != 'All':
+            filter_clause += " AND crime_type = ?"
+            params.append(crime_type)
+        if location and location != 'All':
+            filter_clause += " AND location = ?"
+            params.append(location)
+
+        query = """
             SELECT credibility, COUNT(*) as count
             FROM news
-            WHERE credibility IS NOT NULL
+            """ + filter_clause + """
             GROUP BY credibility
             ORDER BY CASE 
                 WHEN credibility='High' THEN 1
                 WHEN credibility='Medium' THEN 2
                 ELSE 3
             END
-        """)
+        """
+        cursor.execute(query, params)
         distribution = [{'name': r[0], 'value': r[1]} for r in cursor.fetchall()]
 
     return jsonify(distribution)

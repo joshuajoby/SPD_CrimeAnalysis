@@ -19,9 +19,9 @@ export const fetchNews = async (filters = {}) => {
   }
 }
 
-export const fetchStatistics = async () => {
+export const fetchStatistics = async (filters = {}) => {
   try {
-    const response = await api.get('/statistics')
+    const response = await api.get('/statistics', { params: filters })
     return response.data
   } catch (error) {
     console.error('Error fetching statistics:', error)
@@ -29,9 +29,9 @@ export const fetchStatistics = async () => {
   }
 }
 
-export const fetchLocations = async () => {
+export const fetchLocations = async (filters = {}) => {
   try {
-    const response = await api.get('/locations')
+    const response = await api.get('/locations', { params: filters })
     return response.data
   } catch (error) {
     console.error('Error fetching locations:', error)
@@ -39,9 +39,9 @@ export const fetchLocations = async () => {
   }
 }
 
-export const fetchCredibilityDistribution = async () => {
+export const fetchCredibilityDistribution = async (filters = {}) => {
   try {
-    const response = await api.get('/credibility-distribution')
+    const response = await api.get('/credibility-distribution', { params: filters })
     return response.data
   } catch (error) {
     console.error('Error fetching credibility distribution:', error)

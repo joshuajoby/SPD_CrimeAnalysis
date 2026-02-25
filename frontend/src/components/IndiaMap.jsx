@@ -70,14 +70,14 @@ const PulsingMarker = ({ position, city, count, reports }) => {
                         <h3 className="font-bold text-sm uppercase tracking-wider">{city}</h3>
                         <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-bold">{count} Reports</span>
                     </div>
-                    <div className="p-3 bg-white/95 backdrop-blur-md max-h-[200px] overflow-y-auto rounded-b-lg shadow-xl">
+                    <div className="p-3 bg-slate-900/95 backdrop-blur-md max-h-[200px] overflow-y-auto rounded-b-lg shadow-xl border-x border-b border-white/5">
                         {reports.map((report, idx) => (
-                            <div key={idx} className="mb-3 last:mb-0 border-b border-slate-100 last:border-0 pb-2 last:pb-0">
+                            <div key={idx} className="mb-3 last:mb-0 border-b border-white/5 last:border-0 pb-2 last:pb-0">
                                 <div className="flex items-center justify-between mb-1">
-                                    <span className="text-[10px] font-bold text-slate-500 uppercase">{report.crime_type}</span>
-                                    <span className="text-[10px] text-slate-400">{new Date(report.published_at).toLocaleDateString()}</span>
+                                    <span className="text-[10px] font-black text-amber-500/80 uppercase tracking-widest">{report.crime_type}</span>
+                                    <span className="text-[10px] text-slate-500 font-bold">{new Date(report.published_at).toLocaleDateString()}</span>
                                 </div>
-                                <a href={report.url} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-slate-800 hover:text-blue-600 line-clamp-2 leading-snug">
+                                <a href={report.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-slate-200 hover:text-amber-500 line-clamp-2 leading-snug transition-colors">
                                     {report.title}
                                 </a>
                             </div>

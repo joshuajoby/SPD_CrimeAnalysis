@@ -9,23 +9,23 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div className="col-span-1 md:col-span-1">
-            <Link to="/" className="flex items-center space-x-2 mb-6">
-              <ShieldAlert className="h-8 w-8 text-blue-500" />
-              <span className="font-bold text-2xl text-white">
-                Crime<span className="text-blue-500">Watch</span>
+            <Link to="/" className="flex items-center space-x-3 mb-8">
+              <ShieldAlert className="h-8 w-8 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.3)]" />
+              <span className="font-black text-2xl text-white uppercase italic tracking-tighter">
+                Crime<span className="text-amber-500">Watch</span>
               </span>
             </Link>
-            <p className="text-slate-400 leading-relaxed mb-6">
-              India's leading crime intelligence platform. Empowering citizens with data, analytics, and real-time safety alerts.
+            <p className="text-slate-400 text-sm leading-relaxed mb-8 font-medium">
+              India's premier tactical crime intelligence platform. Deploying advanced telemetry and community data to secure the digital and physical frontiers.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="p-2 bg-slate-900 border border-slate-700 rounded-full hover:border-blue-500 hover:text-blue-500 transition-colors">
+              <a href="#" className="p-3 bg-slate-900 border border-white/5 rounded-xl hover:border-amber-500/50 hover:text-amber-500 transition-all hover:-translate-y-1 shadow-xl">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="p-2 bg-slate-900 border border-slate-700 rounded-full hover:border-blue-500 hover:text-blue-500 transition-colors">
+              <a href="#" className="p-3 bg-slate-900 border border-white/5 rounded-xl hover:border-amber-500/50 hover:text-amber-500 transition-all hover:-translate-y-1 shadow-xl">
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="#" className="p-2 bg-slate-900 border border-slate-700 rounded-full hover:border-blue-500 hover:text-blue-500 transition-colors">
+              <a href="#" className="p-3 bg-slate-900 border border-white/5 rounded-xl hover:border-amber-500/50 hover:text-amber-500 transition-all hover:-translate-y-1 shadow-xl">
                 <Github className="h-5 w-5" />
               </a>
             </div>
@@ -33,12 +33,12 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-bold text-white text-lg mb-6">Platform</h3>
-            <ul className="space-y-4">
-              <li><Link to="/results/All" className="hover:text-blue-400 transition-colors">Live Dashboard</Link></li>
-              <li><Link to="/map" className="hover:text-blue-400 transition-colors">Safety Map</Link></li>
-              <li><Link to="/report" className="hover:text-blue-400 transition-colors">Report Incident</Link></li>
-              <li><Link to="/resources" className="hover:text-blue-400 transition-colors">Community Resources</Link></li>
+            <h3 className="font-black text-white text-[10px] uppercase tracking-[0.2em] mb-8">Navigation Node</h3>
+            <ul className="space-y-4 text-sm font-bold">
+              <li><Link to="/results/All" className="text-slate-400 hover:text-amber-500 transition-colors">Tactical Dashboard</Link></li>
+              <li><Link to="/map" className="text-slate-400 hover:text-amber-500 transition-colors">Sector Map</Link></li>
+              <li><Link to="/report" className="text-slate-400 hover:text-amber-500 transition-colors">Log Intelligence</Link></li>
+              <li><Link to="/resources" className="text-slate-400 hover:text-amber-500 transition-colors">Field Manuals</Link></li>
             </ul>
           </div>
 
@@ -56,23 +56,23 @@ const Footer = () => {
 
           {/* Newsletter */}
           <div>
-            <h3 className="font-bold text-white text-lg mb-6">Stay Updated</h3>
-            <p className="text-slate-400 mb-4">Get the latest crime alerts and safety tips directly to your inbox.</p>
-            <form className="flex flex-col gap-3">
+            <h3 className="font-black text-white text-[10px] uppercase tracking-[0.2em] mb-8">Sync Intelligence</h3>
+            <p className="text-slate-400 text-sm mb-6 font-medium">Register for encrypted situational updates and tactical advisories.</p>
+            <form className="flex flex-col gap-4">
               <input
                 type="email"
-                placeholder="Enter your email"
-                className="bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+                placeholder="OPERATOR_EMAIL"
+                className="bg-slate-900/50 border border-white/5 rounded-xl px-5 py-4 text-sm text-white focus:outline-none focus:border-amber-500/50 focus:bg-slate-900 transition-all font-mono"
               />
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors">
-                Subscribe
+              <button className="bg-amber-600 hover:bg-amber-700 text-slate-950 font-black py-4 rounded-xl transition-all uppercase tracking-widest text-xs shadow-[0_10px_20px_rgba(217,119,6,0.2)]">
+                Secure Uplink
               </button>
             </form>
           </div>
         </div>
 
-        <div className="border-t border-slate-800 pt-8 text-center text-slate-500">
-          <p>© {new Date().getFullYear()} CrimeWatch Inc. All rights reserved. | Optimized for Indian States & Territories.</p>
+        <div className="border-t border-white/5 pt-8 text-center text-slate-600">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em]">© {new Date().getFullYear()} CrimeWatch Tactical. Restricted Access. | Sector: India (All Regions)</p>
         </div>
       </div>
     </footer>

@@ -12,7 +12,6 @@ CRIME_KEYWORDS = {
     "kidnapping": ["kidnapped", "abducted", "missing", "kidnap"]
 }
 
-# Strict mapping for common variations to standard city names
 CITY_MAPPINGS = {
     "delhi": "Delhi", "new delhi": "Delhi", "ncr": "Delhi",
     "bombay": "Mumbai", "mumbai": "Mumbai",

@@ -31,30 +31,49 @@ function Results() {
     location: 'All'
   })
 
+  // Initial load for News only (or base options)
   useEffect(() => {
-    const loadData = async () => {
+    const loadInitialNews = async () => {
       try {
         setLoading(true)
-        const [newsData, statsData, locationsData, credibilityData] = await Promise.all([
-          fetchNews({ limit: 200 }), // Increased limit for better population
-          fetchStatistics(),
-          fetchLocations(),
-          fetchCredibilityDistribution()
-        ])
-
+        const newsData = await fetchNews({ limit: 200 })
         setAllNews(newsData || [])
-        setStatistics(statsData || { crime_types: [], credibility: [], total_articles: 0 })
-        setLocations(locationsData || [])
-        setCredibilityDist(credibilityData || [])
       } catch (err) {
-        console.error('Error loading data:', err)
+        console.error('Error loading initial news:', err)
       } finally {
         setLoading(false)
       }
     }
-
-    loadData()
+    loadInitialNews()
   }, [])
+
+  // Reactive load for Dashboard Stats
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        // Prepare current filters
+        const filters = {
+          crime_type: statusFilter.crimeType !== 'All' ? statusFilter.crimeType : undefined,
+          credibility: statusFilter.credibility !== 'All' ? statusFilter.credibility : undefined,
+          location: statusFilter.location !== 'All' ? statusFilter.location : (region && region !== 'All' ? region : undefined)
+        }
+
+        const [statsData, locationsData, credibilityData] = await Promise.all([
+          fetchStatistics(filters),
+          fetchLocations(filters),
+          fetchCredibilityDistribution(filters)
+        ])
+
+        setStatistics(statsData || { crime_types: [], credibility: [], total_articles: 0, articles_with_location: 0 })
+        setLocations(locationsData || [])
+        setCredibilityDist(credibilityData || [])
+      } catch (err) {
+        console.error('Error loading dashboard data:', err)
+      }
+    }
+
+    loadDashboardData()
+  }, [statusFilter, region])
 
   // Apply filters and sorting
   useEffect(() => {
@@ -112,108 +131,111 @@ function Results() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-50 font-sans selection:bg-blue-500/30 selection:text-blue-200">
       <Navbar />
 
       <main className="flex-grow pt-24 px-4 sm:px-6 lg:px-8 w-full max-w-[1400px] mx-auto">
         {/* Header */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <Button variant="ghost" className="mb-2 pl-0 hover:pl-2 transition-all text-base" onClick={() => navigate('/')}>
-              <ArrowLeft className="mr-2 h-5 w-5" /> Back to Search
+            <Button variant="ghost" className="mb-4 pl-0 hover:pl-2 transition-all text-sm font-black uppercase tracking-widest text-slate-400 hover:text-white" onClick={() => navigate('/')}>
+              <ArrowLeft className="mr-2 h-4 w-4" /> Return to Command Center
             </Button>
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-4xl font-bold tracking-tight">Crime Dashboard: {decodeURIComponent(region)}</h1>
+            <div className="flex items-center gap-4 mb-3">
+              <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white uppercase italic">
+                Dash<span className="text-amber-500">board</span>: {decodeURIComponent(region)}
+              </h1>
               <span className="relative flex h-4 w-4">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-500"></span>
               </span>
-              <span className="text-red-500 font-bold text-sm tracking-widest uppercase animate-pulse">Live Feed</span>
+              <span className="text-blue-500 font-black text-xs tracking-[0.3em] uppercase animate-pulse">Live Link</span>
             </div>
-            <p className="text-xl text-muted-foreground">Real-time intelligence and community safety metrics.</p>
+            <p className="text-lg text-slate-400 font-medium">Situational intelligence and verified community metrics.</p>
           </div>
-          <div className="flex gap-3">
-            <Button variant="outline" size="lg" onClick={() => window.location.reload()}>
-              <RefreshCw className="mr-2 h-5 w-5" /> Refresh Intelligence
+          <div className="flex gap-4">
+            <Button variant="outline" size="lg" onClick={() => window.location.reload()} className="border-white/10 bg-white/5 font-black text-xs uppercase tracking-widest hover:bg-white/10">
+              <RefreshCw className="mr-2 h-4 w-4" /> Re-Scan Matrix
             </Button>
-            <Button variant="default" size="lg" onClick={() => navigate('/verify')}>
-              <ShieldCheck className="mr-2 h-5 w-5" /> Verify Credibility
+            <Button variant="default" size="lg" onClick={() => navigate('/verify')} className="bg-amber-600 hover:bg-amber-700 text-slate-950 font-black text-xs uppercase tracking-widest">
+              <ShieldCheck className="mr-2 h-4 w-4" /> Verify Protocol
             </Button>
           </div>
         </div>
 
         {/* Charts & KPI Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
 
-          {/* KPI Cards Column - Made cleaner and more colorful */}
+          {/* KPI Cards Column */}
           <div className="lg:col-span-1 space-y-4">
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white overflow-hidden relative">
-              <div className="absolute -right-6 -top-6 bg-white/10 w-24 h-24 rounded-full blur-2xl"></div>
-              <CardHeader className="pb-1 pt-4 px-5">
-                <CardTitle className="text-xs font-bold uppercase tracking-wider text-blue-100">Total Analytics</CardTitle>
+            <Card className="border border-blue-500/20 shadow-2xl bg-slate-900/50 backdrop-blur-md text-white overflow-hidden relative group">
+              <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
+              <CardHeader className="pb-1 pt-6 px-6 relative z-10">
+                <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">Total Intel</CardTitle>
               </CardHeader>
-              <CardContent className="px-5 pb-4">
-                <div className="text-3xl font-black">{statistics.total_articles}</div>
-                <p className="text-[10px] text-blue-100 mt-1 opacity-80">Processed Reports</p>
+              <CardContent className="px-6 pb-6 relative z-10">
+                <div className="text-4xl font-black group-hover:scale-105 transition-transform">{statistics.total_articles}</div>
+                <p className="text-[10px] text-slate-500 mt-2 font-black uppercase tracking-widest">Aggregated Units</p>
               </CardContent>
             </Card>
 
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-white overflow-hidden relative">
-              <div className="absolute -right-6 -top-6 bg-white/10 w-24 h-24 rounded-full blur-2xl"></div>
-              <CardHeader className="pb-1 pt-4 px-5">
-                <CardTitle className="text-xs font-bold uppercase tracking-wider text-emerald-100">Verified Trust</CardTitle>
+            <Card className="border border-emerald-500/20 shadow-2xl bg-slate-900/50 backdrop-blur-md text-white overflow-hidden relative group">
+              <div className="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors"></div>
+              <CardHeader className="pb-1 pt-6 px-6 relative z-10">
+                <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">Trust Factor</CardTitle>
               </CardHeader>
-              <CardContent className="px-5 pb-4">
-                <div className="text-3xl font-black">
+              <CardContent className="px-6 pb-6 relative z-10">
+                <div className="text-4xl font-black group-hover:scale-105 transition-transform">
                   {statistics.credibility?.find(c => c.name === 'High')?.count || 0}
                 </div>
-                <p className="text-[10px] text-emerald-100 mt-1 opacity-80">High Credibility Sources</p>
+                <p className="text-[10px] text-slate-500 mt-2 font-black uppercase tracking-widest">High Confidence Nodes</p>
               </CardContent>
             </Card>
 
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-amber-500 to-orange-600 text-white overflow-hidden relative">
-              <div className="absolute -right-6 -top-6 bg-white/10 w-24 h-24 rounded-full blur-2xl"></div>
-              <CardHeader className="pb-1 pt-4 px-5">
-                <CardTitle className="text-xs font-bold uppercase tracking-wider text-amber-100">Hot Zones</CardTitle>
+            <Card className="border border-amber-500/20 shadow-2xl bg-slate-900/50 backdrop-blur-md text-white overflow-hidden relative group">
+              <div className="absolute inset-0 bg-amber-500/5 group-hover:bg-amber-500/10 transition-colors"></div>
+              <CardHeader className="pb-1 pt-6 px-6 relative z-10">
+                <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-500">Vector Nodes</CardTitle>
               </CardHeader>
-              <CardContent className="px-5 pb-4">
-                <div className="text-3xl font-black">{statistics.articles_with_location}</div>
-                <p className="text-[10px] text-amber-100 mt-1 opacity-80">Active Geolocations</p>
+              <CardContent className="px-6 pb-6 relative z-10">
+                <div className="text-4xl font-black group-hover:scale-105 transition-transform">{statistics.articles_with_location}</div>
+                <p className="text-[10px] text-slate-500 mt-2 font-black uppercase tracking-widest">Active Geotrackers</p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Charts Columns - Reduced height to 250px */}
-          <Card className="lg:col-span-2 shadow-sm border-slate-200">
-            <CardHeader className="pb-2 pt-3 px-4">
-              <CardTitle className="text-xs font-bold text-slate-800 uppercase tracking-wider">Crime Distribution</CardTitle>
+          {/* Charts Columns */}
+          <Card className="lg:col-span-2 bg-slate-900/40 backdrop-blur-md border-white/5 shadow-2xl">
+            <CardHeader className="pb-2 pt-6 px-6">
+              <CardTitle className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Crime Distribution Matrix</CardTitle>
             </CardHeader>
-            <CardContent className="h-[250px] px-2 pb-2">
+            <CardContent className="h-[280px] px-4 pb-4">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={statistics.crime_types} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <BarChart data={statistics.crime_types} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                   <XAxis
                     dataKey="name"
-                    tick={{ fontSize: 9, fill: '#64748b' }}
+                    tick={{ fontSize: 9, fill: '#64748b', fontWeight: 'bold' }}
                     interval={0}
                     angle={-45}
                     textAnchor="end"
-                    height={40}
+                    height={60}
                     tickLine={false}
                     axisLine={false}
                   />
                   <YAxis
-                    tick={{ fontSize: 9, fill: '#64748b' }}
+                    tick={{ fontSize: 9, fill: '#64748b', fontWeight: 'bold' }}
                     tickLine={false}
                     axisLine={false}
                   />
                   <Tooltip
-                    cursor={{ fill: '#f1f5f9' }}
-                    contentStyle={{ borderRadius: '6px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', fontSize: '11px', padding: '4px 8px' }}
+                    cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                    contentStyle={{ backgroundColor: '#0f172a', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 25px rgba(0,0,0,0.5)', fontSize: '11px', color: '#fff' }}
+                    itemStyle={{ color: '#fbbf24' }}
                   />
-                  <Bar dataKey="value" radius={[3, 3, 0, 0]} name="Incidents" barSize={24}>
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]} name="Reports" barSize={32}>
                     {statistics.crime_types.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} fillOpacity={0.8} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -221,31 +243,31 @@ function Results() {
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-1 shadow-sm border-slate-200">
-            <CardHeader className="pb-2 pt-3 px-4">
-              <CardTitle className="text-xs font-bold text-slate-800 uppercase tracking-wider">Credibility Split</CardTitle>
+          <Card className="lg:col-span-1 bg-slate-900/40 backdrop-blur-md border-white/5 shadow-2xl">
+            <CardHeader className="pb-2 pt-6 px-6">
+              <CardTitle className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Credibility Variance</CardTitle>
             </CardHeader>
-            <CardContent className="h-[250px] px-0 pb-2">
+            <CardContent className="h-[280px] px-0 pb-4">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={credibilityDist}
                     cx="50%"
                     cy="50%"
-                    innerRadius={50}
-                    outerRadius={80}
-                    paddingAngle={2}
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={4}
                     dataKey="value"
                     label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
                     labelLine={false}
                     stroke="none"
                   >
                     {credibilityDist.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={CREDIBILITY_COLORS[entry.name] || '#94a3b8'} />
+                      <Cell key={`cell-${index}`} fill={CREDIBILITY_COLORS[entry.name] || '#94a3b8'} fillOpacity={0.8} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ borderRadius: '6px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', fontSize: '11px', padding: '4px 8px' }} />
-                  <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '10px' }} />
+                  <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '11px', color: '#fff' }} />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em' }} />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>
@@ -254,11 +276,11 @@ function Results() {
 
 
         {/* Advanced Filter & Sort */}
-        <Card className="mb-8 sticky top-20 z-30 shadow-md border-slate-200">
+        <Card className="mb-12 sticky top-20 z-30 shadow-2xl bg-slate-900 border-white/10">
           <CardContent className="p-4">
-            <div className="flex flex-col md:flex-row gap-4 items-center">
-              <div className="flex items-center gap-2 font-bold text-slate-700 whitespace-nowrap">
-                <Filter className="h-4 w-4" /> Filters:
+            <div className="flex flex-col md:flex-row gap-6 items-center">
+              <div className="flex items-center gap-2 font-black text-slate-400 text-xs uppercase tracking-widest whitespace-nowrap">
+                <Filter className="h-4 w-4 text-amber-500" /> Matrix Filters:
               </div>
 
               <select className="input-field" value={statusFilter.crimeType} onChange={(e) => handleFilterChange('crimeType', e.target.value)}>
@@ -273,71 +295,71 @@ function Results() {
                 {getLocationOptions().map(opt => <option key={opt} value={opt}>{opt}</option>)}
               </select>
 
-              <div className="h-8 w-px bg-slate-200 hidden md:block"></div>
+              <div className="h-8 w-px bg-white/10 hidden md:block"></div>
 
-              <div className="flex items-center gap-2 font-bold text-slate-700 whitespace-nowrap">
-                Sort By:
+              <div className="flex items-center gap-2 font-black text-slate-400 text-xs uppercase tracking-widest whitespace-nowrap">
+                Sequence:
               </div>
               <select className="input-field w-auto" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                <option value="date">Newest First</option>
-                <option value="credibility">Highest Credibility</option>
+                <option value="date">Temporal Baseline</option>
+                <option value="credibility">Confidence Priority</option>
               </select>
 
               <Button variant="ghost" onClick={() => {
                 setStatusFilter({ crimeType: 'All', credibility: 'All', location: 'All' });
                 setSortBy('date');
-              }} className="ml-auto text-sm text-slate-500 hover:text-slate-900">
-                Reset
+              }} className="ml-auto text-xs font-black uppercase tracking-widest text-slate-500 hover:text-white">
+                Purge Filters
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Detailed Articles List - Masonry Grid */}
-        <div className="mb-20">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-              Latest Intelligence Reports <span className="text-lg font-normal text-slate-500 ml-2">({filteredNews.length} reports)</span>
+        {/* Detailed Articles List */}
+        <div className="mb-24">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-black tracking-tight text-white uppercase italic">
+              Intelligence Stream <span className="text-lg font-normal text-slate-500 ml-4 lowercase not-italic">// {filteredNews.length} verified packets</span>
             </h2>
           </div>
 
           {filteredNews.length === 0 ? (
-            <Card className="p-12 text-center text-muted-foreground bg-slate-50 border-dashed border-2">
-              <ShieldCheck className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-              <p>No reports found matching your criteria.</p>
+            <Card className="p-20 text-center text-slate-500 bg-slate-900/30 border-dashed border-2 border-white/5">
+              <ShieldCheck className="w-16 h-16 mx-auto mb-6 opacity-20" />
+              <p className="font-black uppercase tracking-[0.2em]">No intelligence found matching search parameters.</p>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredNews.map((article, idx) => (
-                <Card key={idx} className="group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border-slate-200 flex flex-col overflow-hidden bg-white h-full cursor-pointer"
+                <Card key={idx} className="group hover:shadow-[0_0_50px_rgba(37,99,235,0.1)] hover:-translate-y-2 transition-all duration-500 border-white/5 flex flex-col overflow-hidden bg-slate-900/50 backdrop-blur-sm h-full cursor-pointer"
                   onClick={() => setSelectedArticle(article)}>
                   {/* Trust Indicator Strip */}
-                  <div className={`h-1.5 w-full ${article.credibility === 'High' ? 'bg-emerald-500' :
-                    article.credibility === 'Medium' ? 'bg-amber-500' :
-                      'bg-rose-500'
+                  <div className={`h-1.5 w-full ${article.credibility === 'High' ? 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]' :
+                    article.credibility === 'Medium' ? 'bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]' :
+                      'bg-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.5)]'
                     }`}></div>
 
-                  <CardContent className="p-6 flex flex-col flex-grow">
-                    <div className="flex justify-between items-start mb-4">
-                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${article.credibility === 'High' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
-                        article.credibility === 'Medium' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
-                          'bg-rose-50 text-rose-700 border border-rose-100'
+                  <CardContent className="p-8 flex flex-col flex-grow">
+                    <div className="flex justify-between items-start mb-6">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${article.credibility === 'High' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                        article.credibility === 'Medium' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                          'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                         }`}>
-                        {article.credibility} Trust
+                        {article.credibility} Truth
                       </span>
-                      <span className="text-xs font-semibold text-slate-400">
+                      <span className="text-[10px] font-black text-slate-500 tracking-widest">
                         {new Date(article.published_at).toLocaleDateString()}
                       </span>
                     </div>
 
-                    <h3 className="text-lg font-bold text-slate-900 mb-3 group-hover:text-blue-700 transition-colors line-clamp-3">
+                    <h3 className="text-xl font-black text-white mb-6 group-hover:text-amber-500 transition-colors leading-tight line-clamp-3">
                       {article.title}
                     </h3>
 
-                    <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-50">
-                      <span className="text-xs font-bold text-slate-500 uppercase">{article.source}</span>
-                      <div className="flex items-center text-blue-600 text-xs font-bold">
-                        Read Analysis <ChevronRight className="w-3 h-3 ml-1" />
+                    <div className="mt-auto pt-6 flex items-center justify-between border-t border-white/5">
+                      <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] group-hover:text-white transition-colors">{article.source}</span>
+                      <div className="flex items-center text-blue-400 text-[10px] font-black uppercase tracking-widest">
+                        Decrypt <ChevronRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
                   </CardContent>
@@ -350,70 +372,67 @@ function Results() {
 
       {/* Article Detail Modal */}
       {selectedArticle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
           onClick={() => setSelectedArticle(null)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-in fade-in zoom-in-95 duration-200"
+          <div className="bg-slate-900 border border-white/10 rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.8)] w-full max-w-3xl max-h-[90vh] overflow-y-auto relative animate-in fade-in zoom-in-95 duration-300"
             onClick={e => e.stopPropagation()}>
 
-            <button className="absolute top-4 right-4 p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors"
+            <button className="absolute top-6 right-6 p-3 bg-white/5 rounded-full hover:bg-rose-500/20 hover:text-rose-500 transition-all z-10"
               onClick={() => setSelectedArticle(null)}>
-              <X className="w-5 h-5 text-slate-600" />
+              <X className="w-6 h-6 text-slate-400" />
             </button>
 
-            <div className="p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${selectedArticle.credibility === 'High' ? 'bg-emerald-100 text-emerald-800' :
-                  selectedArticle.credibility === 'Medium' ? 'bg-amber-100 text-amber-800' :
-                    'bg-rose-100 text-rose-800'
+            <div className="p-10">
+              <div className="flex items-center gap-4 mb-8">
+                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] ${selectedArticle.credibility === 'High' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                  selectedArticle.credibility === 'Medium' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                    'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                   }`}>
-                  {selectedArticle.credibility} Confidence Score
+                  {selectedArticle.credibility} Confidence Protocol
                 </span>
-                <span className="text-slate-500 text-sm font-medium">
+                <span className="text-slate-500 text-xs font-black tracking-widest uppercase">
                   {new Date(selectedArticle.published_at).toLocaleString()}
                 </span>
               </div>
 
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 leading-tight">
+              <h2 className="text-3xl md:text-4xl font-black text-white mb-8 leading-tight italic">
                 {selectedArticle.title}
               </h2>
 
-              <div className="prose prose-slate max-w-none mb-8">
-                <p className="text-lg text-slate-600 leading-relaxed">
-                  {selectedArticle.description ? selectedArticle.description.replace(/<[^>]+>/g, '') : 'No detailed description available for this report.'}
+              <div className="prose prose-invert max-w-none mb-10">
+                <p className="text-xl text-slate-400 leading-relaxed font-medium">
+                  {selectedArticle.description ? selectedArticle.description.replace(/<[^>]+>/g, '') : 'No detailed telemetry available for this report.'}
                 </p>
               </div>
 
-              <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
-                <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-blue-600" /> AI Credibility Analysis
+              <div className="bg-slate-950/50 p-8 rounded-2xl border border-white/5 mb-10 shadow-inner">
+                <h4 className="text-xs font-black text-white mb-6 flex items-center gap-3 uppercase tracking-[0.3em]">
+                  <Activity className="w-4 h-4 text-blue-500" /> Matrix Analysis
                 </h4>
-                <p className="text-sm text-slate-600 mb-4">
-                  Our system has analyzed this report's source, sentiment, and cross-referenced facts.
-                </p>
-                <div className="flex gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                   <div className="flex flex-col">
-                    <span className="text-slate-400 uppercase text-xs font-bold">Source</span>
-                    <span className="font-semibold text-slate-900">{selectedArticle.source}</span>
+                    <span className="text-slate-500 uppercase text-[10px] font-black tracking-widest mb-1">Source</span>
+                    <span className="font-black text-white uppercase text-sm tracking-wider">{selectedArticle.source}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-slate-400 uppercase text-xs font-bold">Crime Type</span>
-                    <span className="font-semibold text-slate-900 capitalize">{selectedArticle.crime_type || 'Unclassified'}</span>
+                    <span className="text-slate-500 uppercase text-[10px] font-black tracking-widest mb-1">Vector Type</span>
+                    <span className="font-black text-amber-500 uppercase text-sm tracking-wider">{selectedArticle.crime_type || 'Unclassified'}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-slate-400 uppercase text-xs font-bold">Location</span>
-                    <span className="font-semibold text-slate-900 capitalize">{selectedArticle.location || 'Unknown'}</span>
+                    <span className="text-slate-500 uppercase text-[10px] font-black tracking-widest mb-1">Sector</span>
+                    <span className="font-black text-blue-400 uppercase text-sm tracking-wider">{selectedArticle.location || 'Dark Node'}</span>
                   </div>
                 </div>
               </div>
 
               <div className="flex gap-4">
-                <Button className="flex-1 bg-slate-900 hover:bg-slate-800 text-white" asChild>
+                <Button className="flex-1 h-14 bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest text-xs border-0" asChild>
                   <a href={selectedArticle.url} target="_blank" rel="noopener noreferrer">
-                    Read Original Source <ExternalLink className="w-4 h-4 ml-2" />
+                    Access Primary Source <ExternalLink className="w-4 h-4 ml-3" />
                   </a>
                 </Button>
-                <Button variant="outline" className="flex-1" onClick={() => navigate('/verify')}>
-                  Verify Another Link
+                <Button variant="outline" className="flex-1 h-14 border-white/10 bg-white/5 text-slate-400 font-black uppercase tracking-widest text-xs hover:bg-white/10 hover:text-white" onClick={() => navigate('/verify')}>
+                  Cross-Reference Intel
                 </Button>
               </div>
             </div>
@@ -425,19 +444,34 @@ function Results() {
 
       <style>{`
         .input-field {
-            height: 2.5rem;
-            border-radius: 0.375rem;
-            border: 1px solid #e2e8f0;
-            padding: 0 1rem;
-            font-size: 0.875rem;
-            background-color: white;
-            color: #0f172a;
-            outline: 2px solid transparent;
-            min-width: 140px;
+            height: 3rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background-color: rgba(255,255,255,0.02);
+            color: white;
+            outline: none;
+            min-width: 160px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .input-field:hover {
+            border-color: rgba(255,255,255,0.2);
+            background-color: rgba(255,255,255,0.05);
         }
         .input-field:focus {
-            outline: 2px solid #2563eb;
-            border-color: transparent;
+            border-color: #2563eb;
+            background-color: rgba(255,255,255,0.08);
+            box-shadow: 0 0 15px rgba(37,99,235,0.2);
+        }
+        option {
+            background-color: #0f172a;
+            color: white;
+            padding: 10px;
         }
       `}</style>
     </div>

@@ -60,19 +60,18 @@ const Navbar = () => {
         </div>
       )}
 
-      <nav className={`transition-all duration-300 ${scrolled || !isHome ? 'bg-slate-900/95 backdrop-blur-md shadow-lg py-3' : 'bg-transparent py-4'
+      <nav className={`transition-all duration-300 ${scrolled || !isHome ? 'bg-slate-950/90 backdrop-blur-xl border-b border-white/5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] py-3' : 'bg-transparent py-4'
         }`}>
         <div className="w-[90%] max-w-[1400px] mx-auto flex justify-between items-center px-4">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className={`p-2 rounded-lg transition-colors ${scrolled || !isHome ? 'bg-amber-500 text-slate-900' : 'bg-white/10 text-white group-hover:bg-white group-hover:text-slate-900'
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className={`p-2 rounded-xl transition-all duration-500 ${scrolled || !isHome ? 'bg-amber-500 text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.3)]' : 'bg-white/10 text-white group-hover:bg-white group-hover:text-slate-950'
               }`}>
-              <ShieldAlert className="w-5 h-5" />
+              <ShieldAlert className="w-5 h-5 transition-transform group-hover:rotate-12" />
             </div>
-            <span className={`text-lg font-black tracking-tighter ${scrolled || !isHome ? 'text-white' : 'text-white'
-              }`}>
-              CRIME<span className="text-amber-500">WATCH</span>
+            <span className="text-xl font-black tracking-tighter text-white uppercase italic">
+              CRIME<span className="text-amber-500 group-hover:text-amber-400 transition-colors">WATCH</span>
             </span>
           </Link>
 
