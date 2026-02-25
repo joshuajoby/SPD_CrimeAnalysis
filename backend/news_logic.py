@@ -135,7 +135,12 @@ def analyze_news(title, description, source="Unknown"):
     }
     
     # Extensive AI Analysis (Accurate & Deep)
-    load_dotenv() # Reload in case .env was just modified
+    try:
+        from dotenv import load_dotenv
+        load_dotenv() # Reload in case .env was just modified
+    except ImportError:
+        pass
+    
     api_key = os.environ.get("GEMINI_API_KEY", "")
     
     if api_key and api_key != "YOUR_API_KEY_HERE" and api_key != "":

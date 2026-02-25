@@ -14,6 +14,8 @@ def get_news():
     crime_type = request.args.get('crime_type')
     location = request.args.get('location')
     credibility = request.args.get('credibility')
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
     limit = request.args.get('limit', 50, type=int)
 
     with get_connection() as conn:
@@ -30,12 +32,20 @@ def get_news():
         if crime_type:
             query += " AND crime_type = ?"
             params.append(crime_type)
+        # Handle exact match or fuzzy match
         if location:
-            query += " AND location = ?"
-            params.append(location)
+            query += " AND location LIKE ?"
+            params.append('%' + location + '%')
         if credibility:
             query += " AND credibility = ?"
             params.append(credibility)
+            
+        if start_date:
+            query += " AND published_at >= ?"
+            params.append(start_date + "T00:00:00Z")
+        if end_date:
+            query += " AND published_at <= ?"
+            params.append(end_date + "T23:59:59Z")
         
         query += " ORDER BY id DESC LIMIT ?"
         params.append(limit)

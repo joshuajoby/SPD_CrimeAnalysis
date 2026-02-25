@@ -338,7 +338,13 @@ function Results() {
                         {article.credibility} Trust
                       </span>
                       <span className="text-xs font-semibold text-slate-400">
-                        {new Date(article.published_at).toLocaleDateString()}
+                        {new Date(article.published_at).toLocaleString('en-IN', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
                       </span>
                     </div>
 
@@ -381,7 +387,13 @@ function Results() {
                   {selectedArticle.credibility} Confidence Score
                 </span>
                 <span className="text-slate-500 text-sm font-medium">
-                  {new Date(selectedArticle.published_at).toLocaleString()}
+                  {new Date(selectedArticle.published_at).toLocaleString('en-IN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
                 </span>
               </div>
 

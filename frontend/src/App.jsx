@@ -3,6 +3,7 @@ import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Results from './pages/Results'
 import CredibilityCheck from './pages/CredibilityCheck'
+import Databank from './pages/Databank'
 import ReportCrime from './pages/ReportCrime'
 import EmergencyContacts from './pages/EmergencyContacts'
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/map" element={<Home />} /> {/* Map is now on Home */}
         <Route path="/dashboard" element={<Navigate to="/results/All" replace />} />
         <Route path="/results/:region" element={<Results />} />
+        <Route path="/databank" element={<Databank />} />
         <Route path="/verify" element={<CredibilityCheck />} />
         <Route path="/report" element={<ReportCrime />} />
         <Route path="/emergency" element={<EmergencyContacts />} />

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ShieldAlert, Menu, X, LayoutDashboard, BarChart3, Phone, Lock, BookOpen } from 'lucide-react'
+import { ShieldAlert, Menu, X, LayoutDashboard, BarChart3, Phone, Lock, BookOpen, Database } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from './ui/button'
 import { cn } from '../lib/utils'
@@ -38,6 +38,7 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/', icon: LayoutDashboard },
     { name: 'Dashboard', path: '/dashboard', icon: BarChart3 },
+    { name: 'Databank', path: '/databank', icon: Database },
     { name: 'Report Crime', path: '/report', icon: ShieldAlert },
     { name: 'Resources', path: '/resources', icon: BookOpen },
   ]

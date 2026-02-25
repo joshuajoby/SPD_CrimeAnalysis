@@ -41,9 +41,9 @@ def create_table(db_path: Optional[str] = None) -> None:
             """
         )
 
-        # For development ease, we'll recreate the users table to ensure new schema
-        cursor.execute("DROP TABLE IF EXISTS users")
-
+        # For development ease, we previously recreated the users table to ensure new schema
+        # but this drops all accounts. Removed DROP TABLE statement.
+        
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS users (
